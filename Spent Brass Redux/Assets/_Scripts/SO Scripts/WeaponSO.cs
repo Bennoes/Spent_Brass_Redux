@@ -15,6 +15,8 @@ public class WeaponSO : ScriptableObject
 
     public WeaponType weaponType;
 
+    public bool primaryWeapon = false;
+
 
     //weapon attributes
     public float projectileSpeed = 20;

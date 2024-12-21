@@ -25,7 +25,7 @@ public class ProjectileController : MonoBehaviour
         Vector2 currentPos = transform.position;
         transform.position += (Vector3)projectileDirection * projectileSpeed * Time.deltaTime;
         distanceTravelled += projectileSpeed * Time.deltaTime;
-        Debug.Log("distance travelled is " +  distanceTravelled);   
+        
 
         if(distanceTravelled >= projectileRange)
         {
