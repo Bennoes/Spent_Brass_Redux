@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -19,13 +20,26 @@ public class WeaponSO : ScriptableObject
 
 
     //weapon attributes
+    public bool FullAuto = false;
+
+    public int shotsPerPull = 1;
+    public float cycleRate;
     public float projectileSpeed = 20;
     public float reloadTime;
     public float damage;
-    public float range;
-    public float accuracy;
-    public float recoil;
-    public float recoilRecovery;
+    public float rangeNominal;
+    public float rangeFuzz;
+
+    public float maxSpreadFuzz;
+    public float spreadNominalFuzz;
+    public float recoilRate;
+    public float recoilRecoveryRate;
+
+    public float tracerLength;
+
+    public AnimationCurve ProjectileSpeedDistance;
+
+
 
     
 

@@ -1,7 +1,6 @@
 
 using System.Collections.Generic;
 
-
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour
@@ -25,27 +24,46 @@ public class WeaponController : MonoBehaviour
 
     public LayerMask weaponLayer;
     private GameObject clickedObject;
+    private bool triggerPull;
+    private float cycleTimer = 0;
 
+    private float recoilTimer = 0;
+    private float currentSpreadFuzz;
+    
     // Start is called before the first frame update
     void Start()
     {
         if (cam == null) cam = Camera.main;
-
-        //set up weapon list (mini inventory)
-        
-
-        
-        
+       
     }
+
+    
 
     // Update is called once per frame
     void Update()
     {
+        
         //trigger pull check
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) 
+        {         
+            triggerPull = true;
+
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            triggerPull = false;
+            recoilTimer = 0;
+            
+        }
+
+        if (triggerPull)
         {
             WeaponFire();
+            recoilTimer += Time.deltaTime;
+            
         }
+
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -138,29 +156,79 @@ public class WeaponController : MonoBehaviour
     private void FixedUpdate()
     {
         RotateShootPoints();
+
+        if(cycleTimer > 0) { cycleTimer -= Time.fixedDeltaTime; }
+
     }
-
-
-    private void WeaponFire()
+    private void ProjectileCreation()
     {
-        if (storedWeapons[0] != null)
+
+        for (int i = 0; i < storedWeapons[0].shotsPerPull; i++)
         {
 
             GameObject clonedProjectile = Instantiate(projectile, actualShootPoint.transform.position, Quaternion.identity);
             ProjectileController clonedController = clonedProjectile.GetComponent<ProjectileController>();
+
             //pass relevant attributes to the newly spawned projectile - more might be added here
-            clonedController.projectileDirection = playerToMouse;
+            WeaponSO weapon = storedWeapons[0];
+            clonedController.weapon = weapon;
+
+            currentSpreadFuzz = Mathf.Lerp(weapon.spreadNominalFuzz, weapon.maxSpreadFuzz, recoilTimer * weapon.recoilRate);
+            //Debug.Log(currentSpreadFuzz);
+
+
+            float angleFuzz = Random.Range(-currentSpreadFuzz, currentSpreadFuzz);
+            Quaternion rotationZ = Quaternion.Euler(0,0,angleFuzz);
+
+
+            clonedController.projectileDirection = rotationZ * playerToMouse;
             clonedController.projectileSpeed = storedWeapons[0].projectileSpeed;
-            clonedController.projectileRange = storedWeapons[0].range;
+            //need to add fuzz to range
+            float rangeFuzz = Random.Range(-storedWeapons[0].rangeFuzz, storedWeapons[0].rangeFuzz);
+            clonedController.projectileRange = storedWeapons[0].rangeNominal + rangeFuzz;
+        }      
+    }
+
+    private void WeaponFire()
+    {
+        if (storedWeapons[0] != null && storedWeapons[0].FullAuto && cycleTimer <= 0)
+        {
+            //full auto version
+            ProjectileCreation();
+            
+            cycleTimer = storedWeapons[0].cycleRate;
+
+        }
+        else if (storedWeapons[0] != null && !storedWeapons[0].FullAuto && cycleTimer <= 0)
+        {            
+            //semi auto version
+            ProjectileCreation();
+            cycleTimer = storedWeapons[0].cycleRate;
+            triggerPull = false;
 
         }
         else
         {
-            Debug.Log("No weapon equiped");
+            //Debug.Log("No weapon equiped");
         }
 
 
     }
+
+    private void AccuracyFuzzCalculator()
+    {
+        float actualSpread = 1;    //needs to be a comniation of nominal spread and recoil spread
+        
+
+        float angleFuzz = Random.Range(-actualSpread, actualSpread);
+
+        //calculate recoil multiplier
+        Quaternion rotationZ = Quaternion.Euler(0, 0, angleFuzz);
+
+
+
+    }
+
 
     private void WeaponSwap()
     {

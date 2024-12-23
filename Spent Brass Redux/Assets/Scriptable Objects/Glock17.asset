@@ -24,10 +24,22 @@ MonoBehaviour:
   - {x: -0.5, y: 0.5}
   weaponType: 0
   primaryWeapon: 1
-  projectileSpeed: 10
+  FullAuto: 0
+  shotsPerPull: 1
+  cycleRate: 0.2
+  projectileSpeed: 50
   reloadTime: 0
   damage: 0
-  range: 5
-  accuracy: 0
-  recoil: 0
-  recoilRecovery: 0
+  rangeNominal: 20
+  rangeFuzz: 1
+  maxSpreadFuzz: 5
+  spreadNominalFuzz: 5
+  recoilRate: 1
+  recoilRecoveryRate: 0
+  tracerLength: 2
+  ProjectileSpeedDistance:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

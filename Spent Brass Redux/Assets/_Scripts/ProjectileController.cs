@@ -9,6 +9,9 @@ public class ProjectileController : MonoBehaviour
     [HideInInspector] public float projectileRange;
     [HideInInspector] public Vector2 projectileDirection;
 
+    [HideInInspector] public WeaponSO weapon;
+    public TrailRenderer tracer;
+
     private float distanceTravelled = 0;
     
 
@@ -16,7 +19,7 @@ public class ProjectileController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        tracer.time = weapon.tracerLength / weapon.projectileSpeed;
     }
 
     // Update is called once per frame
