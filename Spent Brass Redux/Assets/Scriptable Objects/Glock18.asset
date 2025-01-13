@@ -25,6 +25,7 @@ MonoBehaviour:
   weaponType: 3
   primaryWeapon: 0
   FullAuto: 1
+  maxAmmo: 19
   shotsPerPull: 1
   cycleRate: 0.2
   projectileSpeed: 50

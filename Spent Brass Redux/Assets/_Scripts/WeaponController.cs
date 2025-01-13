@@ -5,18 +5,23 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    [HideInInspector] public Vector2[] shootPoints;
-
-    
-    public List<WeaponSO> storedWeapons = new List<WeaponSO>() { null,null};
-
-    public float pickUpRange = 1;
-
     public GameObject actualShootPoint;
     public GameObject projectile;
     public GameObject DropHolder;
-
     public Camera cam;
+
+    [HideInInspector] public Vector2[] shootPoints;
+
+    //new weapon logic
+    [Header("Assigned Weapon")]
+    public WeaponSO assignedWeapon;
+
+    public List<WeaponManager> weaponInventory = new List<WeaponManager>() { null,null };
+
+
+    public float pickUpRange = 1;
+
+    
 
     private Vector2 playerToMouse;
     private Vector2 mousePointer;
@@ -29,53 +34,93 @@ public class WeaponController : MonoBehaviour
 
     private float recoilTimer = 0;
     private float currentSpreadFuzz;
+
+
+
+    public RuntimeAnimatorController weaponAnimationController;
+    public Animator weaponAnimator;
     
     // Start is called before the first frame update
     void Start()
     {
         if (cam == null) cam = Camera.main;
+
+        //weapon wrap
+        WeaponWrapUp();
+
+        foreach (WeaponManager weaponManager in weaponInventory)
+        {
+            if(weaponManager == null)
+            {
+                Debug.Log("weapon slot is null");
+            }
+            else
+            {
+                Debug.Log("weapon in this slot " + weaponManager.WeaponData.name);
+            }
+            
+        }
        
     }
 
-    
-
-    // Update is called once per frame
     void Update()
     {
-        
         //trigger pull check
-        if (Input.GetMouseButtonDown(0)) 
-        {         
+        if (Input.GetMouseButtonDown(0))
+        {
             triggerPull = true;
 
         }
+
+       
 
         if (Input.GetMouseButtonUp(0))
         {
             triggerPull = false;
             recoilTimer = 0;
-            
         }
 
         if (triggerPull)
         {
             WeaponFire();
             recoilTimer += Time.deltaTime;
-            
         }
-
 
         if (Input.GetMouseButtonDown(1))
         {
             PickUpOrSwapWeapon();
-            
-          
         }
     }
 
+    private void FixedUpdate()
+    {
+        RotateShootPoints();
+
+        if (cycleTimer > 0) { cycleTimer -= Time.fixedDeltaTime; }
+
+        //weaponAnimator.SetFloat("Horizontal", playerToMouse.x);
+        //weaponAnimator.SetFloat("Vertical", playerToMouse.y);
+
+    }
+
+
+    private void WeaponWrapUp()
+    {
+        WeaponState weaponState = new WeaponState(assignedWeapon.maxAmmo,int.MaxValue, true);
+
+        WeaponManager playerPrimary = new WeaponManager(assignedWeapon,weaponState);
+
+        weaponInventory[0] = playerPrimary;
+
+    }
+    
+
+    // Update is called once per frame
+    
+
     private void PickUpOrSwapWeapon()
     {
-        WeaponSO weaponPickUp = CheckForPickUpAndReturn();
+        WeaponManager weaponPickUp = CheckForPickUpAndReturn();
 
         if (weaponPickUp != null)
         {
@@ -94,16 +139,16 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    private bool CheckInventoryForEmpty(WeaponSO pickedWeapon)
+    private bool CheckInventoryForEmpty(WeaponManager pickedWeapon)
     {        
-        for (int i = 0; i < storedWeapons.Count; i++ )
+        for (int i = 0; i < weaponInventory.Count; i++ )
         {
-            Debug.Log("for loop is running");
-            if(storedWeapons[i] == null)
+            //Debug.Log("for loop is running");
+            if(weaponInventory[i] == null)
             {
                 Debug.Log("empty weapon slot at: " + i);
-                Debug.Log("so adding " + pickedWeapon.name);
-                storedWeapons[i] = pickedWeapon;
+                Debug.Log("so adding " + pickedWeapon.WeaponData.name);
+                weaponInventory[i] = pickedWeapon;
                 Destroy(clickedObject);
                 return true;               
             }           
@@ -111,28 +156,29 @@ public class WeaponController : MonoBehaviour
         return false;      
     }
 
-    private void DiscardAndEquip(WeaponSO pickedWeapon)
+    private void DiscardAndEquip(WeaponManager pickedWeapon)
     {
         //make sure not to discard main weapon
         //need to search for the secondary with for loop
 
-        for (int i = 0; i < storedWeapons.Count; i++)
+        for (int i = 0; i < weaponInventory.Count; i++)
         {
-            if (!storedWeapons[i].primaryWeapon)
+            if (!weaponInventory[i].WeaponData.primaryWeapon)
             {
-               Debug.Log ("this weapon is not primary. Bin it " + storedWeapons[i].name);
+               Debug.Log ("this weapon is not primary. Bin it " + weaponInventory[i].WeaponData.name);
 
                GameObject tempDropHolder = Instantiate(DropHolder,transform.position,Quaternion.identity);
                PickUpControl tempPickUpControl = tempDropHolder.GetComponent<PickUpControl>();
-               tempPickUpControl.weapon = storedWeapons[i];
+               tempPickUpControl.heldWeapon = weaponInventory[i];
 
-                storedWeapons[i] = pickedWeapon;
+                weaponInventory[i] = pickedWeapon;
+                weaponAnimator.runtimeAnimatorController = pickedWeapon.WeaponData.animationController;
                 Destroy(clickedObject);
             }
         }
     }
 
-    private WeaponSO CheckForPickUpAndReturn()
+    private WeaponManager CheckForPickUpAndReturn()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //raycast at the mouse position
@@ -144,7 +190,7 @@ public class WeaponController : MonoBehaviour
             clickedObject = hit.collider.gameObject;
             //need to get the weaponSO stored in the controller script on the clicked gameobject
             PickUpControl pickUp = clickedObject.GetComponent<PickUpControl>();
-            return pickUp.weapon;           
+            return pickUp.heldWeapon;           
         }
         else
         {
@@ -153,27 +199,21 @@ public class WeaponController : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
-    {
-        RotateShootPoints();
-
-        if(cycleTimer > 0) { cycleTimer -= Time.fixedDeltaTime; }
-
-    }
+    
     private void ProjectileCreation()
     {
 
-        for (int i = 0; i < storedWeapons[0].shotsPerPull; i++)
+        for (int i = 0; i < weaponInventory[0].WeaponData.shotsPerPull; i++)
         {
 
             GameObject clonedProjectile = Instantiate(projectile, actualShootPoint.transform.position, Quaternion.identity);
             ProjectileController clonedController = clonedProjectile.GetComponent<ProjectileController>();
 
             //pass relevant attributes to the newly spawned projectile - more might be added here
-            WeaponSO weapon = storedWeapons[0];
-            clonedController.weapon = weapon;
+            WeaponSO weaponData = weaponInventory[0].WeaponData;
+            clonedController.weapon = weaponData;
 
-            currentSpreadFuzz = Mathf.Lerp(weapon.spreadNominalFuzz, weapon.maxSpreadFuzz, recoilTimer * weapon.recoilRate);
+            currentSpreadFuzz = Mathf.Lerp(weaponData.spreadNominalFuzz, weaponData.maxSpreadFuzz, recoilTimer * weaponData.recoilRate);
             //Debug.Log(currentSpreadFuzz);
 
 
@@ -182,60 +222,115 @@ public class WeaponController : MonoBehaviour
 
 
             clonedController.projectileDirection = rotationZ * playerToMouse;
-            clonedController.projectileSpeed = storedWeapons[0].projectileSpeed;
+            clonedController.projectileSpeed = weaponInventory[0].WeaponData.projectileSpeed;
             //need to add fuzz to range
-            float rangeFuzz = Random.Range(-storedWeapons[0].rangeFuzz, storedWeapons[0].rangeFuzz);
-            clonedController.projectileRange = storedWeapons[0].rangeNominal + rangeFuzz;
-        }      
+            float rangeFuzz = Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
+            clonedController.projectileRange = weaponInventory[0].WeaponData.rangeNominal + rangeFuzz;
+
+            
+            
+        }
+        
     }
+
 
     private void WeaponFire()
     {
-        if (storedWeapons[0] != null && storedWeapons[0].FullAuto && cycleTimer <= 0)
-        {
-            //full auto version
-            ProjectileCreation();
-            
-            cycleTimer = storedWeapons[0].cycleRate;
+        var currentWeapon = weaponInventory[0];
 
+        if (currentWeapon == null || currentWeapon.WeaponData == null)
+        {
+            Debug.Log("No weapon equipped");
+            return;
         }
-        else if (storedWeapons[0] != null && !storedWeapons[0].FullAuto && cycleTimer <= 0)
-        {            
-            //semi auto version
-            ProjectileCreation();
-            cycleTimer = storedWeapons[0].cycleRate;
+
+        WeaponState weaponState = currentWeapon.State;
+        WeaponSO weaponData = currentWeapon.WeaponData;
+
+        Debug.Log("Current ammo: " + weaponState.currentAmmoCount);
+        Debug.Log("Reloads remaining: " + weaponState.reloadsRemaining);
+
+        // Check ammo availability
+        if (weaponState.currentAmmoCount < 1)
+        {
+            Debug.Log("Out of ammo!");
+            HandleOutOfAmmo(weaponState,weaponData);
+            return;
+        }
+
+        // Check if ready to fire
+        if (cycleTimer > 0)
+        {
+            Debug.Log("Weapon cooling down");
+            return;
+        }
+
+        // Fire based on weapon type
+        ProjectileCreation();
+        weaponState.currentAmmoCount--; // Decrement ammo count
+        cycleTimer = weaponData.cycleRate;
+
+        // Handle semi-auto trigger reset
+        if (!weaponData.FullAuto)
+        {
             triggerPull = false;
-
         }
-        else
-        {
-            //Debug.Log("No weapon equiped");
-        }
-
-
     }
 
-    private void AccuracyFuzzCalculator()
+    // Handles behaviour when out of ammo
+    private void HandleOutOfAmmo(WeaponState weaponState, WeaponSO weaponData)
     {
-        float actualSpread = 1;    //needs to be a comniation of nominal spread and recoil spread
+        if(weaponState.reloadsRemaining == 0)
+        {
+            Debug.Log("No mags left");
+            DiscardWeapon(weaponState);
+            return;
+
+        }
+        // Implement logic such as playing a "click" sound or showing a reload prompt
+
+        //check for remaining reloads - none left - discard weapon
+
+        //play reload animation
+
+        //wait the specified amount of time
+        Debug.Log("No ammo - reloading!");
+
+        if(weaponState.reloadsRemaining > 0 )
+        {
+            weaponState.currentAmmoCount = weaponData.maxAmmo;
+
+            if( !weaponState.primaryWeapon) weaponState.reloadsRemaining--;
+
+        }
         
-
-        float angleFuzz = Random.Range(-actualSpread, actualSpread);
-
-        //calculate recoil multiplier
-        Quaternion rotationZ = Quaternion.Euler(0, 0, angleFuzz);
-
-
-
+        
     }
 
+
+    private void DiscardWeapon(WeaponState state)
+    {
+        Debug.Log("discard weapon");
+        if (state.primaryWeapon)
+        {
+            Debug.Log("can't discard primary");
+            return;
+        }
+
+        WeaponSwap();
+
+        weaponInventory[1] = null;
+
+    }
 
     private void WeaponSwap()
     {
-        if (storedWeapons[0] != null && storedWeapons[1] != null)
+        if (weaponInventory[0] != null && weaponInventory[1] != null)
         {
             Debug.Log("weapon swapped");
-            (storedWeapons[0], storedWeapons[1]) = (storedWeapons[1], storedWeapons[0]);
+            (weaponInventory[0], weaponInventory[1]) = (weaponInventory[1], weaponInventory[0]);
+            //swap out the animation contoller 
+            weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
 
         }
         else
@@ -255,7 +350,7 @@ public class WeaponController : MonoBehaviour
         playerToMouse = mousePointer - (Vector2)gameObject.transform.position;
         playerToMouse.Normalize();
 
-        if (storedWeapons[0] == null || storedWeapons[0].shootPoints.Length < 8)
+        if (weaponInventory[0] == null || weaponInventory[0].WeaponData.shootPoints.Length < 8)
         {
             Debug.Log("Current weapon is null or shootpoints are unasigned");
         }
@@ -265,22 +360,28 @@ public class WeaponController : MonoBehaviour
             float highestDot = -Mathf.Infinity;
             int closestIndex = 0;
 
-            for (int i = 0; i < storedWeapons[0].shootPoints.Length; i++)
+            for (int i = 0; i < weaponInventory[0].WeaponData.shootPoints.Length; i++)
             {
-                Vector2 normalisedShootPoint = storedWeapons[0].shootPoints[i];
+                Vector2 normalisedShootPoint = weaponInventory[0].WeaponData.shootPoints[i];
                 normalisedShootPoint.Normalize();
                 float dotProduct = Vector2.Dot(normalisedShootPoint, playerToMouse);
                 if (dotProduct > highestDot)
                 {
                     highestDot = dotProduct;
                     closestIndex = i;
+
+
                 }
 
 
             }
 
-            actualShootPoint.transform.localPosition = (Vector3)storedWeapons[0].shootPoints[closestIndex];
-
+            actualShootPoint.transform.localPosition = (Vector3)weaponInventory[0].WeaponData.shootPoints[closestIndex];
+            //make the animtor move teh gun to the correct rotation:
+            Vector2 gunAnimXandY = weaponInventory[0].WeaponData.shootPoints[closestIndex];
+            gunAnimXandY.Normalize();
+            weaponAnimator.SetFloat("Horizontal", gunAnimXandY.x);
+            weaponAnimator.SetFloat("Vertical", gunAnimXandY.y);
         }
 
 

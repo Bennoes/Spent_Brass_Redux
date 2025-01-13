@@ -25,6 +25,7 @@ MonoBehaviour:
   weaponType: 2
   primaryWeapon: 0
   FullAuto: 0
+  maxAmmo: 4
   shotsPerPull: 12
   cycleRate: 1
   projectileSpeed: 50
@@ -61,3 +62,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  animationController: {fileID: 9100000, guid: 7066d5037f3e5824e891a5d9d51f812d, type: 2}

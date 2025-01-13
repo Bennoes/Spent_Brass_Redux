@@ -21,6 +21,7 @@ public class WeaponSO : ScriptableObject
 
     //weapon attributes
     public bool FullAuto = false;
+    public int maxAmmo;
 
     public int shotsPerPull = 1;
     public float cycleRate;
@@ -37,9 +38,10 @@ public class WeaponSO : ScriptableObject
 
     public float tracerLength;
 
+    //this needs to be handed to the projectile which will alter its bahavior
     public AnimationCurve ProjectileSpeedDistance;
 
-
+    public RuntimeAnimatorController animationController;
 
     
 
