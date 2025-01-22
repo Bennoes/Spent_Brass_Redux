@@ -14,27 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Mossberg 500
   shootPoints:
-  - {x: 0, y: 0.5}
-  - {x: 0.5, y: 0.5}
-  - {x: 0.5, y: 0}
-  - {x: 0.5, y: -0.5}
-  - {x: 0, y: -0.5}
-  - {x: -0.5, y: -0.5}
-  - {x: -0.5, y: 0}
-  - {x: -0.5, y: 0.5}
+  - {x: -0.1, y: 0.5}
+  - {x: 0.7, y: 0.4}
+  - {x: 0.9, y: -0.25}
+  - {x: 0.5, y: -0.7}
+  - {x: -0.25, y: -0.5}
+  - {x: -0.5, y: -0.7}
+  - {x: -0.9, y: -0.25}
+  - {x: -0.5, y: 0.4}
   weaponType: 2
   primaryWeapon: 0
   FullAuto: 0
   maxAmmo: 4
   shotsPerPull: 12
   cycleRate: 1
-  projectileSpeed: 50
-  reloadTime: 0
+  projectileSpeed: 60
+  reloadTime: 2
   damage: 0
-  rangeNominal: 15
+  rangeNominal: 10
   rangeFuzz: 2
-  maxSpreadFuzz: 10
-  spreadNominalFuzz: 10
+  maxSpreadFuzz: 5
+  spreadNominalFuzz: 5
   recoilRate: 1
   recoilRecoveryRate: 0
   tracerLength: 1
@@ -44,17 +44,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: -1
-      outSlope: -1
+      inSlope: -0.5
+      outSlope: -0.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0
-      inSlope: -1
-      outSlope: -1
+      value: 0.5
+      inSlope: -0.5
+      outSlope: -0.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

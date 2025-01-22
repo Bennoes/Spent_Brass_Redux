@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
-    [HideInInspector] public float projectileSpeed;
-    [HideInInspector] public float projectileDamage;
+    [HideInInspector] public float projectileMaxSpeed;
+    [HideInInspector] public float projectileMaxDamage;
     [HideInInspector] public float projectileRange;
     [HideInInspector] public Vector2 projectileDirection;
 
@@ -13,7 +13,15 @@ public class ProjectileController : MonoBehaviour
     public TrailRenderer tracer;
 
     private float distanceTravelled = 0;
-    
+    private float currentSpeed;
+    private float distanceToHit;
+    private Vector2 hitPoint;
+
+    [SerializeField] private GameObject hitMarker;
+
+    public AnimationCurve ProjectileSpeedDistance;
+    public AnimationCurve DamageByDistance;
+
 
 
     // Start is called before the first frame update
@@ -25,17 +33,73 @@ public class ProjectileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        float graphXValue = distanceTravelled / projectileRange;
+
+        currentSpeed = ProjectileSpeedDistance.Evaluate(graphXValue) * projectileMaxSpeed;
+        //Debug.Log("proejectile speed: " + currentSpeed);
         Vector2 currentPos = transform.position;
-        transform.position += (Vector3)projectileDirection * projectileSpeed * Time.deltaTime;
-        distanceTravelled += projectileSpeed * Time.deltaTime;
+
+        bool hit = FireRayOneFrame();
+
+        if (hit)
+        {
+            transform.position += new Vector3(hitPoint.x,hitPoint.y,0);
+            distanceTravelled += distanceToHit * Time.deltaTime;
+            Instantiate(hitMarker, hitPoint, Quaternion.identity);
+
+            //tell the object its been hit
+             
+
+            Destroy(gameObject);
+
+
+        }
+        else
+        {
+            transform.position += (Vector3)projectileDirection * currentSpeed * Time.deltaTime;
+            distanceTravelled += currentSpeed * Time.deltaTime;
+            if (distanceTravelled >= projectileRange)
+            {
+                Instantiate(hitMarker, this.transform.position, Quaternion.identity);
+                Destroy(gameObject);
+            }
+        }
+
+        
+        
         
 
-        if(distanceTravelled >= projectileRange)
-        {
-            Destroy(gameObject);
-        }
+        
         
     }
 
+    private bool FireRayOneFrame()
+    {
+        float rayLength = currentSpeed * Time.deltaTime;       
+
+        RaycastHit2D hit =  Physics2D.Raycast(transform.position,projectileDirection,rayLength);
+
+        if (hit.collider == null)
+        {
+           // Debug.Log("no hits");
+           return false;
+        }
+        else
+        {
+            Debug.Log("hit " +  hit.collider.gameObject.name);
+            distanceToHit = hit.distance;
+            hitPoint = hit.point;
+
+            IHittable hitObject =hit.collider.gameObject.GetComponent<IHittable>();
+
+            hitObject.OnHit();
+
+            return true;
+        }
+
+    }
 
 }
+
+

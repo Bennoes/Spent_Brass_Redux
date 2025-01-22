@@ -8,6 +8,8 @@ public class WeaponState
 
     public int currentAmmoCount;
     public int reloadsRemaining;
+    public bool isReloading;
+    public float currentReloadTime;
 
     //potential buffs
     public bool extendedMag;

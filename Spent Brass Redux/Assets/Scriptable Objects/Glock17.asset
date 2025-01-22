@@ -14,22 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Glock 17
   shootPoints:
-  - {x: 0, y: 0.5}
-  - {x: 0.5, y: 0.5}
-  - {x: 0.5, y: 0}
-  - {x: 0.5, y: -0.5}
-  - {x: 0, y: -0.5}
-  - {x: -0.5, y: -0.5}
-  - {x: -0.5, y: 0}
-  - {x: -0.5, y: 0.5}
+  - {x: 0.2, y: 0.4}
+  - {x: 0.6, y: 0.3}
+  - {x: 0.7, y: -0.2}
+  - {x: 0.6, y: -0.5}
+  - {x: -0.2, y: -0.5}
+  - {x: -0.6, y: -0.5}
+  - {x: -0.6, y: -0.2}
+  - {x: -0.5, y: 0.3}
   weaponType: 0
   primaryWeapon: 1
   FullAuto: 0
   maxAmmo: 9
   shotsPerPull: 1
   cycleRate: 0.2
-  projectileSpeed: 50
-  reloadTime: 0
+  projectileSpeed: 70
+  reloadTime: 1.5
   damage: 0
   rangeNominal: 20
   rangeFuzz: 1
@@ -40,7 +40,26 @@ MonoBehaviour:
   tracerLength: 2
   ProjectileSpeedDistance:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.6
+      outSlope: -0.6
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.4
+      inSlope: -0.6
+      outSlope: -0.6
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  animationController: {fileID: 9100000, guid: 97e06ead1998dec43a89a755d66f1425, type: 2}

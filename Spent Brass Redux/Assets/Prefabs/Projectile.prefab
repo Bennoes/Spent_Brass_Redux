@@ -51,6 +51,7 @@ MonoBehaviour:
   projectileDirection: {x: 0, y: 0}
   weapon: {fileID: 0}
   tracer: {fileID: 7276235657901487641}
+  hitMarker: {fileID: 4430193689385791520, guid: b2ffe71d17733304f91eaeda3e2a8c66, type: 3}
 --- !u!96 &7276235657901487641
 TrailRenderer:
   serializedVersion: 2

@@ -14,33 +14,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: HK416
   shootPoints:
-  - {x: 0, y: 0.5}
-  - {x: 0.5, y: 0.5}
-  - {x: 0.5, y: 0}
-  - {x: 0.5, y: -0.5}
-  - {x: 0, y: -0.5}
-  - {x: -0.5, y: -0.5}
-  - {x: -0.5, y: 0}
-  - {x: -0.5, y: 0.5}
+  - {x: 0.1, y: 0.5}
+  - {x: 0.9, y: 0.5}
+  - {x: 1, y: -0.3}
+  - {x: 0.45, y: -0.8}
+  - {x: -0.1, y: -1}
+  - {x: -0.5, y: -0.8}
+  - {x: -1, y: -0.3}
+  - {x: -0.5, y: 0.3}
   weaponType: 1
   primaryWeapon: 0
   FullAuto: 1
-  maxAmmo: 30
+  maxAmmo: 100
   shotsPerPull: 1
-  cycleRate: 0.05
+  cycleRate: 0.1
   projectileSpeed: 100
-  reloadTime: 0
+  reloadTime: 2
   damage: 0
-  rangeNominal: 30
+  rangeNominal: 15
   rangeFuzz: 3
-  maxSpreadFuzz: 3
+  maxSpreadFuzz: 5
   spreadNominalFuzz: 0
   recoilRate: 0.5
   recoilRecoveryRate: 0
   tracerLength: 2.5
   ProjectileSpeedDistance:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.6
+      outSlope: -0.6
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.4
+      inSlope: -0.6
+      outSlope: -0.6
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

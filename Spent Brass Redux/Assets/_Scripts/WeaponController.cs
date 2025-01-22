@@ -35,6 +35,8 @@ public class WeaponController : MonoBehaviour
     private float recoilTimer = 0;
     private float currentSpreadFuzz;
 
+    
+
 
 
     public RuntimeAnimatorController weaponAnimationController;
@@ -60,7 +62,8 @@ public class WeaponController : MonoBehaviour
             }
             
         }
-       
+        weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
+
     }
 
     void Update()
@@ -98,6 +101,7 @@ public class WeaponController : MonoBehaviour
 
         if (cycleTimer > 0) { cycleTimer -= Time.fixedDeltaTime; }
 
+        if (weaponInventory[0].State.currentReloadTime > 0) { weaponInventory[0].State.currentReloadTime -= Time.deltaTime;}
         //weaponAnimator.SetFloat("Horizontal", playerToMouse.x);
         //weaponAnimator.SetFloat("Vertical", playerToMouse.y);
 
@@ -222,13 +226,14 @@ public class WeaponController : MonoBehaviour
 
 
             clonedController.projectileDirection = rotationZ * playerToMouse;
-            clonedController.projectileSpeed = weaponInventory[0].WeaponData.projectileSpeed;
+            clonedController.projectileMaxSpeed = weaponInventory[0].WeaponData.projectileSpeed;
             //need to add fuzz to range
             float rangeFuzz = Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
             clonedController.projectileRange = weaponInventory[0].WeaponData.rangeNominal + rangeFuzz;
+            clonedController.ProjectileSpeedDistance = weaponInventory[0].WeaponData.ProjectileSpeedDistance;
 
-            
-            
+
+
         }
         
     }
@@ -247,8 +252,8 @@ public class WeaponController : MonoBehaviour
         WeaponState weaponState = currentWeapon.State;
         WeaponSO weaponData = currentWeapon.WeaponData;
 
-        Debug.Log("Current ammo: " + weaponState.currentAmmoCount);
-        Debug.Log("Reloads remaining: " + weaponState.reloadsRemaining);
+        //Debug.Log("Current ammo: " + weaponState.currentAmmoCount);
+       // Debug.Log("Reloads remaining: " + weaponState.reloadsRemaining);
 
         // Check ammo availability
         if (weaponState.currentAmmoCount < 1)
@@ -261,7 +266,7 @@ public class WeaponController : MonoBehaviour
         // Check if ready to fire
         if (cycleTimer > 0)
         {
-            Debug.Log("Weapon cooling down");
+            //Debug.Log("Weapon cooling down");
             return;
         }
 
@@ -280,29 +285,43 @@ public class WeaponController : MonoBehaviour
     // Handles behaviour when out of ammo
     private void HandleOutOfAmmo(WeaponState weaponState, WeaponSO weaponData)
     {
+        //no reloads left discard weapon and return
         if(weaponState.reloadsRemaining == 0)
         {
             Debug.Log("No mags left");
             DiscardWeapon(weaponState);
             return;
-
         }
-        // Implement logic such as playing a "click" sound or showing a reload prompt
 
-        //check for remaining reloads - none left - discard weapon
-
-        //play reload animation
-
-        //wait the specified amount of time
-        Debug.Log("No ammo - reloading!");
-
-        if(weaponState.reloadsRemaining > 0 )
+        //gun is ready to fire again
+        if(weaponState.isReloading && weaponState.currentReloadTime <=0)
         {
+            Debug.Log("Reloading");
             weaponState.currentAmmoCount = weaponData.maxAmmo;
 
-            if( !weaponState.primaryWeapon) weaponState.reloadsRemaining--;
-
+            if (!weaponState.primaryWeapon) weaponState.reloadsRemaining--;
+            weaponState.isReloading = false;
+            return;
         }
+        
+        if( weaponState.isReloading && weaponState.currentReloadTime > 0)
+        {
+            
+            Debug.Log("counting down to reload: " + weaponState.currentReloadTime);
+            return;
+        }
+
+        if(!weaponState.isReloading)
+        {
+            Debug.Log("set up reload bool and time");
+            weaponState.isReloading = true;
+            weaponState.currentReloadTime = weaponData.reloadTime;
+        }
+
+        
+        
+
+        
         
         
     }
