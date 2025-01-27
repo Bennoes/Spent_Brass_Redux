@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
+    public PlayerMovement playerMovement;
+
     public GameObject actualShootPoint;
     public GameObject projectile;
     public GameObject DropHolder;
@@ -21,10 +23,10 @@ public class WeaponController : MonoBehaviour
 
     public float pickUpRange = 1;
 
-    
 
-    private Vector2 playerToMouse;
-    private Vector2 mousePointer;
+    [HideInInspector] public bool isReloading;
+    private float reloadTimer;
+    
 
 
     public LayerMask weaponLayer;
@@ -34,10 +36,8 @@ public class WeaponController : MonoBehaviour
 
     private float recoilTimer = 0;
     private float currentSpreadFuzz;
-
-    
-
-
+    private Vector2 playerToMouse;
+    private Vector2 mousePointer;
 
     public RuntimeAnimatorController weaponAnimationController;
     public Animator weaponAnimator;
@@ -50,18 +50,7 @@ public class WeaponController : MonoBehaviour
         //weapon wrap
         WeaponWrapUp();
 
-        foreach (WeaponManager weaponManager in weaponInventory)
-        {
-            if(weaponManager == null)
-            {
-                Debug.Log("weapon slot is null");
-            }
-            else
-            {
-                Debug.Log("weapon in this slot " + weaponManager.WeaponData.name);
-            }
-            
-        }
+        
         weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
 
     }
@@ -93,6 +82,17 @@ public class WeaponController : MonoBehaviour
         {
             PickUpOrSwapWeapon();
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        {
+            isReloading = true;
+            reloadTimer = weaponInventory[0].WeaponData.reloadTime;
+            
+        }
+
+        ReloadWeapon(weaponInventory[0].State, weaponInventory[0].WeaponData);
+
+
     }
 
     private void FixedUpdate()
@@ -102,10 +102,111 @@ public class WeaponController : MonoBehaviour
         if (cycleTimer > 0) { cycleTimer -= Time.fixedDeltaTime; }
 
         if (weaponInventory[0].State.currentReloadTime > 0) { weaponInventory[0].State.currentReloadTime -= Time.deltaTime;}
-        //weaponAnimator.SetFloat("Horizontal", playerToMouse.x);
-        //weaponAnimator.SetFloat("Vertical", playerToMouse.y);
+
+        
 
     }
+
+
+    private void ReloadWeapon(WeaponState weaponState, WeaponSO weaponData)
+    {
+        if (!isReloading)
+        {
+            return;
+        }
+
+
+        //deal with pressing the button when weapon is full
+        if(weaponState.currentAmmoCount == weaponData.maxAmmo)
+        {
+            Debug.Log("no need to reload");
+            isReloading = false;
+            reloadTimer = 0;
+            return;
+        }
+
+        //deal with no ammo left
+        if (weaponState.reloadsRemaining == 0 && weaponState.currentAmmoCount == 0)
+        {           
+            Debug.Log("weapon is out of ammo and reloads");
+            DiscardWeapon(weaponState);
+            isReloading = false;
+            reloadTimer = 0;
+            return;
+        }
+
+        //deal with no reloads left
+        if (weaponState.reloadsRemaining == 0)
+        {           
+            Debug.Log("No more reloads");
+            isReloading = false;
+            return;
+        }
+
+        //reload one round at a time vs reload a mag
+        if (weaponData.sequencialReload)
+        {
+            //Debug.Log("Sequencial Reload");
+            SequencialReload(weaponState, weaponData);
+        }
+        else
+        {
+            //Debug.Log("Normal reload");
+            NormalReload(weaponState,weaponData);
+        }
+    }
+
+
+    private void SequencialReload(WeaponState state, WeaponSO data)
+    {
+        if(state.currentAmmoCount == data.maxAmmo)
+        {
+            Debug.Log("fully reloaded");
+            isReloading = false;
+            reloadTimer = 0;
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("reload cancelled");
+            isReloading = false;
+            reloadTimer = 0;
+            return;
+        }
+
+        if (reloadTimer <= 0)
+        {
+            Debug.Log("one round added");
+            state.currentAmmoCount ++;
+            state.reloadsRemaining--;
+            reloadTimer = data.reloadTime;
+            
+        }
+        else
+        {
+            reloadTimer -= Time.deltaTime;
+        }
+
+
+    }
+
+    private void NormalReload(WeaponState state, WeaponSO data)
+    {
+        //if reload animation isnt playing - play it
+        if(reloadTimer <= 0)
+        {
+            state.currentAmmoCount = data.maxAmmo;
+            state.reloadsRemaining--;
+            isReloading = false;
+        }
+        else
+        {
+            reloadTimer -= Time.deltaTime;
+        }
+      
+    }
+
 
 
     private void WeaponWrapUp()
@@ -129,9 +230,7 @@ public class WeaponController : MonoBehaviour
         if (weaponPickUp != null)
         {
             Debug.Log("pick up that GUN");
-            //check inventory for empty slot
-            //eject non perm weapon
-            //assign new weapon to empty slot
+            
              bool pickUpSuccess = CheckInventoryForEmpty(weaponPickUp);
 
             if (!pickUpSuccess) DiscardAndEquip(weaponPickUp); //run the discard weapon logic
@@ -176,7 +275,8 @@ public class WeaponController : MonoBehaviour
                tempPickUpControl.heldWeapon = weaponInventory[i];
 
                 weaponInventory[i] = pickedWeapon;
-                weaponAnimator.runtimeAnimatorController = pickedWeapon.WeaponData.animationController;
+
+                WeaponSwap();
                 Destroy(clickedObject);
             }
         }
@@ -231,6 +331,7 @@ public class WeaponController : MonoBehaviour
             float rangeFuzz = Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
             clonedController.projectileRange = weaponInventory[0].WeaponData.rangeNominal + rangeFuzz;
             clonedController.ProjectileSpeedDistance = weaponInventory[0].WeaponData.ProjectileSpeedDistance;
+            clonedController.DamageOverDistance = weaponInventory[0].WeaponData.DamageOverDistance;
 
 
 
@@ -241,6 +342,8 @@ public class WeaponController : MonoBehaviour
 
     private void WeaponFire()
     {
+        if(playerMovement.isDashing) { return; }
+
         var currentWeapon = weaponInventory[0];
 
         if (currentWeapon == null || currentWeapon.WeaponData == null)
@@ -252,14 +355,24 @@ public class WeaponController : MonoBehaviour
         WeaponState weaponState = currentWeapon.State;
         WeaponSO weaponData = currentWeapon.WeaponData;
 
-        //Debug.Log("Current ammo: " + weaponState.currentAmmoCount);
-       // Debug.Log("Reloads remaining: " + weaponState.reloadsRemaining);
+        
 
         // Check ammo availability
         if (weaponState.currentAmmoCount < 1)
         {
             Debug.Log("Out of ammo!");
-            HandleOutOfAmmo(weaponState,weaponData);
+
+            if(!isReloading)
+            {
+                isReloading = true;
+                reloadTimer = weaponInventory[0].WeaponData.reloadTime;
+
+            }
+
+            
+            //ReloadWeapon(weaponState, weaponData);  
+
+            //HandleOutOfAmmo(weaponState,weaponData);
             return;
         }
 
@@ -270,6 +383,7 @@ public class WeaponController : MonoBehaviour
             return;
         }
 
+        
         // Fire based on weapon type
         ProjectileCreation();
         weaponState.currentAmmoCount--; // Decrement ammo count
@@ -317,12 +431,7 @@ public class WeaponController : MonoBehaviour
             weaponState.isReloading = true;
             weaponState.currentReloadTime = weaponData.reloadTime;
         }
-
-        
-        
-
-        
-        
+     
         
     }
 

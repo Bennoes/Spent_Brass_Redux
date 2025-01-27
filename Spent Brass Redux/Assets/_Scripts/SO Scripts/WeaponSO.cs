@@ -21,6 +21,8 @@ public class WeaponSO : ScriptableObject
 
     //weapon attributes
     public bool FullAuto = false;
+    public bool sequencialReload = false;
+
     public int maxAmmo;
 
     public int shotsPerPull = 1;
@@ -40,6 +42,7 @@ public class WeaponSO : ScriptableObject
 
     //this needs to be handed to the projectile which will alter its bahavior
     public AnimationCurve ProjectileSpeedDistance;
+    public AnimationCurve DamageOverDistance;
 
     public RuntimeAnimatorController animationController;
 

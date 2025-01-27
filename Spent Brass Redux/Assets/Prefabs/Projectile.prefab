@@ -45,13 +45,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc423155885e7c04b946f83e51e2432d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 0
-  projectileDamage: 0
+  projectileMaxSpeed: 0
+  projectileMaxDamage: 0
   projectileRange: 0
   projectileDirection: {x: 0, y: 0}
   weapon: {fileID: 0}
   tracer: {fileID: 7276235657901487641}
   hitMarker: {fileID: 4430193689385791520, guid: b2ffe71d17733304f91eaeda3e2a8c66, type: 3}
+  ProjectileSpeedDistance:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DamageByDistance:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 32768
 --- !u!96 &7276235657901487641
 TrailRenderer:
   serializedVersion: 2

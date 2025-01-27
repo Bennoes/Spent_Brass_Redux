@@ -12,7 +12,11 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 movementVector;
 
+    private float actualSpeed = 2;
     public float playerSpeed = 2;
+    public float dashMultiplier = 1.5f;
+    public bool isDashing;
+
     private Vector2 playerMovement;
 
     // Start is called before the first frame update
@@ -25,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //updates player transform position
-        playerMovement = playerSpeed * Time.deltaTime * movementVector;
+        playerMovement = actualSpeed * Time.deltaTime * movementVector;
         gameObject.transform.position += (Vector3)playerMovement;
 
 
@@ -45,6 +49,20 @@ public class PlayerMovement : MonoBehaviour
         movementVector.x = Input.GetAxis("Horizontal");
         movementVector.y = Input.GetAxis("Vertical");
         movementVector.Normalize();
+
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            //Debug.Log("dashing");
+            actualSpeed = playerSpeed * dashMultiplier;
+            isDashing = true;
+        }
+        else
+        {
+            
+            actualSpeed = playerSpeed;
+            isDashing = false;
+        }
+        
 
         //get info from mouse position
         

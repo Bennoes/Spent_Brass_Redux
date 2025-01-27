@@ -34,6 +34,11 @@ public class PickUpControl : MonoBehaviour
     {
         int numberOfMags = Random.Range(1, maxMags);
 
+        if (assignedWeapon.sequencialReload)
+        {
+            numberOfMags *= assignedWeapon.maxAmmo;
+        }
+        
         WeaponState weaponState = new WeaponState(assignedWeapon.maxAmmo, numberOfMags, false);
 
         WeaponManager weaponHolder = new WeaponManager(assignedWeapon, weaponState);

@@ -25,12 +25,13 @@ MonoBehaviour:
   weaponType: 1
   primaryWeapon: 0
   FullAuto: 1
+  sequencialReload: 0
   maxAmmo: 100
   shotsPerPull: 1
   cycleRate: 0.1
   projectileSpeed: 100
   reloadTime: 2
-  damage: 0
+  damage: 15
   rangeNominal: 15
   rangeFuzz: 3
   maxSpreadFuzz: 5
@@ -39,6 +40,30 @@ MonoBehaviour:
   recoilRecoveryRate: 0
   tracerLength: 2.5
   ProjectileSpeedDistance:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.6
+      outSlope: -0.6
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.4
+      inSlope: -0.6
+      outSlope: -0.6
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DamageOverDistance:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3

@@ -16,11 +16,14 @@ public class ProjectileController : MonoBehaviour
     private float currentSpeed;
     private float distanceToHit;
     private Vector2 hitPoint;
+    private IHittable hitObject;
 
     [SerializeField] private GameObject hitMarker;
 
     public AnimationCurve ProjectileSpeedDistance;
-    public AnimationCurve DamageByDistance;
+    public AnimationCurve DamageOverDistance;
+
+    public LayerMask layerMask;
 
 
 
@@ -48,8 +51,11 @@ public class ProjectileController : MonoBehaviour
             distanceTravelled += distanceToHit * Time.deltaTime;
             Instantiate(hitMarker, hitPoint, Quaternion.identity);
 
+            float hitDamage = DamageOverDistance.Evaluate(graphXValue) * weapon.damage;
             //tell the object its been hit
-             
+            hitObject.OnHit(hitDamage);
+
+            Debug.Log("damage is " + hitDamage);
 
             Destroy(gameObject);
 
@@ -78,7 +84,7 @@ public class ProjectileController : MonoBehaviour
     {
         float rayLength = currentSpeed * Time.deltaTime;       
 
-        RaycastHit2D hit =  Physics2D.Raycast(transform.position,projectileDirection,rayLength);
+        RaycastHit2D hit =  Physics2D.Raycast(transform.position,projectileDirection,rayLength, layerMask);
 
         if (hit.collider == null)
         {
@@ -91,9 +97,9 @@ public class ProjectileController : MonoBehaviour
             distanceToHit = hit.distance;
             hitPoint = hit.point;
 
-            IHittable hitObject =hit.collider.gameObject.GetComponent<IHittable>();
+            hitObject = hit.collider.gameObject.GetComponent<IHittable>();
 
-            hitObject.OnHit();
+            
 
             return true;
         }

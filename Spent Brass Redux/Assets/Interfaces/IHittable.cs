@@ -4,7 +4,8 @@ using UnityEngine;
 
 public interface IHittable
 {
-    public void OnHit();
-    
-    
+    public void OnHit(float damage);
+
+    public float HitPoints { get; set; }
+
 }
