@@ -53,7 +53,7 @@ public class ProjectileController : MonoBehaviour
 
             float hitDamage = DamageOverDistance.Evaluate(graphXValue) * weapon.damage;
             //tell the object its been hit
-            hitObject.OnHit(hitDamage);
+            hitObject.OnHit(hitDamage, hitPoint);
 
             Debug.Log("damage is " + hitDamage);
 

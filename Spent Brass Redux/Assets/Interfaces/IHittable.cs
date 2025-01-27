@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IHittable
 {
-    public void OnHit(float damage);
+    public void OnHit(float damage, Vector2 textPos);
 
     public float HitPoints { get; set; }
 

@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9082cba4e01aa74888a7bb5b5626481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitText: {fileID: 786028562326892221, guid: b3e169d6b8a6e5e4bb8259c481c2340a, type: 3}
   MaxHitPoints: 50
 --- !u!61 &3487142642680253047
 BoxCollider2D:

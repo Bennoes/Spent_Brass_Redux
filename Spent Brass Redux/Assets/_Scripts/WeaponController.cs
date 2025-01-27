@@ -263,11 +263,12 @@ public class WeaponController : MonoBehaviour
     {
         //make sure not to discard main weapon
         //need to search for the secondary with for loop
-
+        Debug.Log("is this firing");
         for (int i = 0; i < weaponInventory.Count; i++)
         {
             if (!weaponInventory[i].WeaponData.primaryWeapon)
             {
+                Debug.Log("if statement i " + i);
                Debug.Log ("this weapon is not primary. Bin it " + weaponInventory[i].WeaponData.name);
 
                GameObject tempDropHolder = Instantiate(DropHolder,transform.position,Quaternion.identity);
@@ -276,10 +277,12 @@ public class WeaponController : MonoBehaviour
 
                 weaponInventory[i] = pickedWeapon;
 
-                WeaponSwap();
+                
                 Destroy(clickedObject);
             }
         }
+        WeaponSwap();
+
     }
 
     private WeaponManager CheckForPickUpAndReturn()
@@ -397,44 +400,6 @@ public class WeaponController : MonoBehaviour
     }
 
     // Handles behaviour when out of ammo
-    private void HandleOutOfAmmo(WeaponState weaponState, WeaponSO weaponData)
-    {
-        //no reloads left discard weapon and return
-        if(weaponState.reloadsRemaining == 0)
-        {
-            Debug.Log("No mags left");
-            DiscardWeapon(weaponState);
-            return;
-        }
-
-        //gun is ready to fire again
-        if(weaponState.isReloading && weaponState.currentReloadTime <=0)
-        {
-            Debug.Log("Reloading");
-            weaponState.currentAmmoCount = weaponData.maxAmmo;
-
-            if (!weaponState.primaryWeapon) weaponState.reloadsRemaining--;
-            weaponState.isReloading = false;
-            return;
-        }
-        
-        if( weaponState.isReloading && weaponState.currentReloadTime > 0)
-        {
-            
-            Debug.Log("counting down to reload: " + weaponState.currentReloadTime);
-            return;
-        }
-
-        if(!weaponState.isReloading)
-        {
-            Debug.Log("set up reload bool and time");
-            weaponState.isReloading = true;
-            weaponState.currentReloadTime = weaponData.reloadTime;
-        }
-     
-        
-    }
-
 
     private void DiscardWeapon(WeaponState state)
     {
