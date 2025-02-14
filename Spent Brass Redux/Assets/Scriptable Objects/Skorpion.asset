@@ -22,9 +22,19 @@ MonoBehaviour:
   - {x: -0.5, y: -0.5}
   - {x: -0.5, y: 0}
   - {x: -0.5, y: 0.5}
+  ejectionPoints:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
   weaponType: 3
   primaryWeapon: 0
   FullAuto: 1
+  sequencialReload: 0
   maxAmmo: 20
   shotsPerPull: 1
   cycleRate: 0.1
@@ -44,3 +54,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  DamageOverDistance:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  animationController: {fileID: 0}
+  SpentAmmo: {fileID: 0}

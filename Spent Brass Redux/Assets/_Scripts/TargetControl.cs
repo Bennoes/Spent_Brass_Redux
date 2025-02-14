@@ -9,6 +9,8 @@ public class TargetControl : MonoBehaviour, IHittable
     public float HitPoints { get; set; }
 
     public float MaxHitPoints;
+
+    
     
 
     // Start is called before the first frame update
@@ -31,7 +33,7 @@ public class TargetControl : MonoBehaviour, IHittable
         
         Debug.Log(gameObject.name + " was hit");
         HitPoints -= damage;
-        Debug.Log($"hit points remaing: {HitPoints}");
+        //Debug.Log($"hit points remaing: {HitPoints}");
 
         Vector2 newTextPos = Utilities.Fuzz(textPos, 0.5f);
         

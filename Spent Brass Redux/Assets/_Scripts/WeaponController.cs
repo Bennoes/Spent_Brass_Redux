@@ -1,13 +1,29 @@
 
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
+    //delegate/event to let UI know weapons are changing
+
+    public static event Action OnWeaponUpdate;
+    public static event Action SetUpMag;
+    public static event Action DepleteByOne;
+    public static event Action ReloadMag;
+    public static event Action ReloadOneRound;
+
+
+
     public PlayerMovement playerMovement;
 
     public GameObject actualShootPoint;
+    public GameObject ejectionPoint;
+    public GameObject spentAmmo;
+    
+
+
     public GameObject projectile;
     public GameObject DropHolder;
     public Camera cam;
@@ -52,6 +68,7 @@ public class WeaponController : MonoBehaviour
 
         
         weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
+        SetUpMag?.Invoke();
 
     }
 
@@ -75,6 +92,7 @@ public class WeaponController : MonoBehaviour
         if (triggerPull)
         {
             WeaponFire();
+            
             recoilTimer += Time.deltaTime;
         }
 
@@ -181,6 +199,8 @@ public class WeaponController : MonoBehaviour
             state.currentAmmoCount ++;
             state.reloadsRemaining--;
             reloadTimer = data.reloadTime;
+
+            ReloadOneRound?.Invoke();
             
         }
         else
@@ -199,6 +219,7 @@ public class WeaponController : MonoBehaviour
             state.currentAmmoCount = data.maxAmmo;
             state.reloadsRemaining--;
             isReloading = false;
+            ReloadMag?.Invoke();
         }
         else
         {
@@ -240,6 +261,8 @@ public class WeaponController : MonoBehaviour
         {
             WeaponSwap();
         }
+
+        OnWeaponUpdate?.Invoke();
     }
 
     private bool CheckInventoryForEmpty(WeaponManager pickedWeapon)
@@ -324,14 +347,14 @@ public class WeaponController : MonoBehaviour
             //Debug.Log(currentSpreadFuzz);
 
 
-            float angleFuzz = Random.Range(-currentSpreadFuzz, currentSpreadFuzz);
+            float angleFuzz = UnityEngine.Random.Range(-currentSpreadFuzz, currentSpreadFuzz);
             Quaternion rotationZ = Quaternion.Euler(0,0,angleFuzz);
 
 
             clonedController.projectileDirection = rotationZ * playerToMouse;
             clonedController.projectileMaxSpeed = weaponInventory[0].WeaponData.projectileSpeed;
             //need to add fuzz to range
-            float rangeFuzz = Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
+            float rangeFuzz = UnityEngine.Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
             clonedController.projectileRange = weaponInventory[0].WeaponData.rangeNominal + rangeFuzz;
             clonedController.ProjectileSpeedDistance = weaponInventory[0].WeaponData.ProjectileSpeedDistance;
             clonedController.DamageOverDistance = weaponInventory[0].WeaponData.DamageOverDistance;
@@ -358,8 +381,6 @@ public class WeaponController : MonoBehaviour
         WeaponState weaponState = currentWeapon.State;
         WeaponSO weaponData = currentWeapon.WeaponData;
 
-        
-
         // Check ammo availability
         if (weaponState.currentAmmoCount < 1)
         {
@@ -372,25 +393,25 @@ public class WeaponController : MonoBehaviour
 
             }
 
-            
-            //ReloadWeapon(weaponState, weaponData);  
-
-            //HandleOutOfAmmo(weaponState,weaponData);
             return;
         }
 
         // Check if ready to fire
         if (cycleTimer > 0)
         {
-            //Debug.Log("Weapon cooling down");
+            
             return;
         }
 
         
         // Fire based on weapon type
         ProjectileCreation();
+
+        EjectSpentAmmo();
+
         weaponState.currentAmmoCount--; // Decrement ammo count
         cycleTimer = weaponData.cycleRate;
+        DepleteByOne?.Invoke();
 
         // Handle semi-auto trigger reset
         if (!weaponData.FullAuto)
@@ -413,7 +434,7 @@ public class WeaponController : MonoBehaviour
         WeaponSwap();
 
         weaponInventory[1] = null;
-
+        OnWeaponUpdate?.Invoke();
     }
 
     private void WeaponSwap()
@@ -424,15 +445,22 @@ public class WeaponController : MonoBehaviour
             (weaponInventory[0], weaponInventory[1]) = (weaponInventory[1], weaponInventory[0]);
             //swap out the animation contoller 
             weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
-
+            SetUpMag?.Invoke();
         }
         else
         {
             Debug.Log("No weapon to swap to");
         }
+        OnWeaponUpdate?.Invoke();
     }
 
-
+    private void EjectSpentAmmo()
+    {
+        WeaponSO weaponData = weaponInventory[0].WeaponData;
+              
+        Instantiate(weaponData.SpentAmmo, ejectionPoint.transform.position,Quaternion.identity);
+                  
+    }
 
     private void RotateShootPoints()
     {
@@ -455,6 +483,7 @@ public class WeaponController : MonoBehaviour
 
             for (int i = 0; i < weaponInventory[0].WeaponData.shootPoints.Length; i++)
             {
+                //use this to determine which ejection point to use too
                 Vector2 normalisedShootPoint = weaponInventory[0].WeaponData.shootPoints[i];
                 normalisedShootPoint.Normalize();
                 float dotProduct = Vector2.Dot(normalisedShootPoint, playerToMouse);
@@ -466,10 +495,12 @@ public class WeaponController : MonoBehaviour
 
                 }
 
-
             }
 
             actualShootPoint.transform.localPosition = (Vector3)weaponInventory[0].WeaponData.shootPoints[closestIndex];
+
+            ejectionPoint.transform.localPosition = (Vector3)weaponInventory[0].WeaponData.ejectionPoints [closestIndex];
+
             //make the animtor move teh gun to the correct rotation:
             Vector2 gunAnimXandY = weaponInventory[0].WeaponData.shootPoints[closestIndex];
             gunAnimXandY.Normalize();

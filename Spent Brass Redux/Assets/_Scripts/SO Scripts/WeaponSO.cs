@@ -13,6 +13,7 @@ public class WeaponSO : ScriptableObject
     public TextField weaponDescription;
 
     public Vector2[] shootPoints;
+    public Vector2[] ejectionPoints;
 
     public WeaponType weaponType;
 
@@ -45,6 +46,11 @@ public class WeaponSO : ScriptableObject
     public AnimationCurve DamageOverDistance;
 
     public RuntimeAnimatorController animationController;
+
+    public GameObject SpentAmmo;
+
+    public Sprite weaponIcon;
+    public Sprite AmmoIcon;
 
     
 
