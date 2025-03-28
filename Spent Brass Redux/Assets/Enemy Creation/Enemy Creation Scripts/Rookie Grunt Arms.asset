@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60dc8dc4365873e418d0a0e291fc84a1, type: 3}
+  m_Name: Rookie Grunt Arms
+  m_EditorClassIdentifier: 
+  enemyPart: 0
+  enemyType: 0
+  enemyLevel: 0
+  baseArmour: 0
+  armourModifier: 0
+  baseSpeed: 0
+  speedModifier: 0
+  siteRange: 0
+  aggressionModifier: 0
+  confidenceModifier: 0
+  animationControl: {fileID: 0}
+  animationClips: []

@@ -35,7 +35,7 @@ MonoBehaviour:
   primaryWeapon: 0
   FullAuto: 1
   sequencialReload: 0
-  maxAmmo: 30
+  maxAmmo: 300
   shotsPerPull: 1
   cycleRate: 0.05
   projectileSpeed: 100
@@ -62,3 +62,5 @@ MonoBehaviour:
     m_RotationOrder: 4
   animationController: {fileID: 0}
   SpentAmmo: {fileID: 0}
+  weaponIcon: {fileID: 0}
+  AmmoIcon: {fileID: 0}

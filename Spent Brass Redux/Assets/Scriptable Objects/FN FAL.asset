@@ -33,7 +33,7 @@ MonoBehaviour:
   - {x: -0.2, y: -0.1}
   weaponType: 1
   primaryWeapon: 0
-  FullAuto: 1
+  FullAuto: 0
   sequencialReload: 0
   maxAmmo: 20
   shotsPerPull: 1
@@ -41,8 +41,8 @@ MonoBehaviour:
   projectileSpeed: 100
   reloadTime: 2
   damage: 30
-  rangeNominal: 15
-  rangeFuzz: 3
+  rangeNominal: 20
+  rangeFuzz: 1
   maxSpreadFuzz: 10
   spreadNominalFuzz: 0
   recoilRate: 10
@@ -99,4 +99,4 @@ MonoBehaviour:
   animationController: {fileID: 9100000, guid: 0e4677aad22a15f43bce4caa6c9c9287, type: 2}
   SpentAmmo: {fileID: 1771831615206667709, guid: 5d8a072c2d7c2b6498747a4668dc2866, type: 3}
   weaponIcon: {fileID: 21300000, guid: 05fe0d7d9e031374e9c8de180e750308, type: 3}
-  AmmoIcon: {fileID: 21300000, guid: b7e7817e34f22ac439f8319d2bd73488, type: 3}
+  AmmoIcon: {fileID: -17587069, guid: b7e7817e34f22ac439f8319d2bd73488, type: 3}

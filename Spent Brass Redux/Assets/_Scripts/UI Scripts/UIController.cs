@@ -9,6 +9,10 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    //new stuff for strategy pattern
+    public Dictionary<MagazineType, IMagazine> magazineDictionary;
+
+
     public WeaponController weaponController;
 
     public GameObject equipedPanel;
@@ -18,7 +22,7 @@ public class UIController : MonoBehaviour
     public GameObject ammoIconHolder;
 
     private Image equippedImage;
-    private Sprite ammoSprite;
+    
 
     private GameObject[] ammoArray;
     // Start is called before the first frame update
@@ -26,10 +30,21 @@ public class UIController : MonoBehaviour
     
     void Start()
     {
-        
+        SingleStackMag singleStackMag = new SingleStackMag();
+        TubeMag tubeMag = new TubeMag();
+        DoubleStackMag doubleStackMag = new DoubleStackMag();
 
 
- 
+        magazineDictionary = new Dictionary<MagazineType, IMagazine>
+        {
+            {MagazineType.SINGLE_STACK, singleStackMag },
+            {MagazineType.DOUBLE_STACK, doubleStackMag },
+            {MagazineType.TUBE, tubeMag }
+        };
+        //set up dictionary of ammo concrete classes
+
+
+
     }
 
     // Update is called once per frame
@@ -45,6 +60,28 @@ public class UIController : MonoBehaviour
         }
     }
 
+
+    private void OnEnable()
+    {
+        WeaponController.OnWeaponUpdate += UpdateWeaponUI;
+        WeaponController.SetUpMag += SetUpMagazine;
+        WeaponController.DepleteByOne += ShootOneRound;
+        WeaponController.ReloadMag += ReloadMag;
+        WeaponController.ReloadOneRound += ReloadOneRound;
+
+
+    }
+    private void OnDisable()
+    {
+        WeaponController.OnWeaponUpdate -= UpdateWeaponUI;
+        WeaponController.SetUpMag -= SetUpMagazine;
+        WeaponController.DepleteByOne -= ShootOneRound;
+        WeaponController.ReloadMag -= ReloadMag;
+        WeaponController.ReloadOneRound -= ReloadOneRound;
+    }
+
+
+    //set up the magazine bullet positions:
     private void SetUpMagArray(float x, float y)
     {
         RectTransform rectTransform = magazinePanel.GetComponent<RectTransform>();
@@ -76,6 +113,8 @@ public class UIController : MonoBehaviour
 
                 break;
             case WeaponType.SHOTGUN:
+
+                SetUpPumpAction(rectTransform, scaledRectSize);
                 break;
             case WeaponType.MACHINE_PISTOL:
                 break;
@@ -140,25 +179,29 @@ public class UIController : MonoBehaviour
         }
     }
 
-
-    private void OnEnable()
+    private void SetUpPumpAction(RectTransform magazinePanel, Vector2 scaledRectSize)
     {
-        WeaponController.OnWeaponUpdate += UpdateWeaponUI;
-        WeaponController.SetUpMag += SetUpMagazine;
-        WeaponController.DepleteByOne += ShootOneRound;
-        WeaponController.ReloadMag += ReloadMag;
-        WeaponController.ReloadOneRound += ReloadOneRound;
+        Rect magRect = magazinePanel.rect;
+        Vector2 firstPos = new(magRect.center.x , (magRect.center.y - magRect.height / 2) + scaledRectSize.x);
 
-        
+        for (int i = 0; i < ammoPositions.Length; i++)
+        {
+            if(i == 0)
+            {
+                ammoPositions[i] = firstPos;
+                continue;
+            }
+
+            float ammoPitch = scaledRectSize.y - scaledRectSize.x;
+            ammoPositions[i] = new(firstPos.x, firstPos.y + (ammoPitch + 10f) * i);
+
+        }
+
     }
-    private void OnDisable()
-    {
-        WeaponController.OnWeaponUpdate -= UpdateWeaponUI;
-        WeaponController.SetUpMag -= SetUpMagazine;
-        WeaponController.DepleteByOne -= ShootOneRound;
-        WeaponController.ReloadMag -= ReloadMag;
-        WeaponController.ReloadOneRound -= ReloadOneRound;
-    }
+
+
+
+
 
     private void UpdateWeaponUI()
     {
@@ -194,7 +237,7 @@ public class UIController : MonoBehaviour
     private void ShootOneRound()
     {
         //update this to moving each bullet icon to the next position
-        Debug.Log("Shoot one round");
+        //Debug.Log("Shoot one round");
         int maxChildren = magazinePanel.transform.childCount;
         GameObject child = magazinePanel.transform.GetChild(maxChildren - 1).gameObject;
         Destroy(child);
@@ -202,17 +245,17 @@ public class UIController : MonoBehaviour
         switch (weaponController.weaponInventory[0].WeaponData.weaponType)
         {
             case WeaponType.PISTOL:
-                Debug.Log("pistol");
+                //Debug.Log("pistol");
                 SingleStack(maxChildren);
 
                 break;
             case WeaponType.ASSUALT_RIFLE:
-                Debug.Log("assault Rifle");
+                //Debug.Log("assault Rifle");
                 StaggeredBullets(maxChildren);
 
                 break;
             case WeaponType.SHOTGUN:
-
+                SingleStack(maxChildren);
 
                 break;
             case WeaponType.MACHINE_PISTOL:
@@ -272,16 +315,12 @@ public class UIController : MonoBehaviour
 
     }
 
-    private void PumpAction()
-    {
-
-    }
 
 
 
     private void SetUpMagazine()
     {
-        Debug.Log("Set Up Mag");
+        //Debug.Log("Set Up Mag");
         ClearMag();
         WeaponSO currentData = weaponController.weaponInventory[0].WeaponData;
         WeaponState currentState = weaponController.weaponInventory[0].State;
@@ -296,9 +335,8 @@ public class UIController : MonoBehaviour
 
         SetUpMagArray(spriteX, spriteY);
 
-        Debug.Log("ammo sprite bounds " + spriteX + "," + spriteY);
+        //Debug.Log("ammo sprite bounds " + spriteX + "," + spriteY);
                
-
         for (int i = 0; i < currentState.currentAmmoCount; i++)
         {
 
@@ -312,15 +350,52 @@ public class UIController : MonoBehaviour
             
             iconHolder.transform.localPosition = ammoPositions[i];
             iconHolder.transform.SetSiblingIndex(0);
-        }
+        }      
+    }
 
+    private void ReloadOneRound()
+    {
+        WeaponSO currentData = weaponController.weaponInventory[0].WeaponData;
+        WeaponState currentState = weaponController.weaponInventory[0].State;
+
+        float spriteX = currentData.AmmoIcon.bounds.size.x * currentData.AmmoIcon.pixelsPerUnit;
+        float spriteY = currentData.AmmoIcon.bounds.size.y * currentData.AmmoIcon.pixelsPerUnit;
+
+        GameObject iconHolder = Instantiate(ammoIconHolder, magazinePanel.transform);
+        Image ammoImage = iconHolder.GetComponent<Image>();
+        ammoImage.sprite = currentData.AmmoIcon;
+
+        //change rect transform size to suit bullet
+        RectTransform rectTransform = iconHolder.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new(rectTransform.sizeDelta.x * spriteX, rectTransform.sizeDelta.y * spriteY);
+
+        Debug.Log("set sibling to max");
+        iconHolder.transform.SetSiblingIndex(magazinePanel.transform.childCount);
+
+        iconHolder.transform.localPosition = new (ammoPositions[0].x, ammoPositions[0].y - spriteY - 20f);
+
+        for (int i = 0; i < magazinePanel.transform.childCount; i++)
+        {
+            GameObject sibling = magazinePanel.transform.GetChild(i).gameObject;
+
+            int index = magazinePanel.transform.childCount - i - 1;
+
+
+            LeanTween.moveLocalY(sibling, ammoPositions[index].y, currentData.reloadTime);
+            
+
+            
+
+        }
         
+
 
     }
 
+
     private void ClearMag()
     {
-        Debug.Log("clear mag");
+        //Debug.Log("clear mag");
         for (int i = 0; i< magazinePanel.transform.childCount; i++)
         {
             Destroy(magazinePanel.transform.GetChild(i).gameObject);
@@ -334,21 +409,9 @@ public class UIController : MonoBehaviour
 
     }
 
-    private void ReloadOneRound()
-    {
-        //make method of teh below
-        WeaponSO currentData = weaponController.weaponInventory[0].WeaponData;
-        Sprite ammoSprite = currentData.AmmoIcon;
-        Vector2 spriteSize = ammoSprite.bounds.size;
-        float pixelsPerUnit = ammoSprite.pixelsPerUnit;
-        Vector2 spriteSizePixels = spriteSize * pixelsPerUnit;
+ 
 
-        GameObject iconHolder = Instantiate(ammoIconHolder, magazinePanel.transform);
-        Image ammoImage = iconHolder.GetComponent<Image>();
-        ammoImage.sprite = currentData.AmmoIcon;
-        RectTransform ammoHolderTransform = iconHolder.GetComponent<RectTransform>();
-        //ammoHolderTransform.sizeDelta = spriteSizePixels;
-    }
+    
 
 
 }

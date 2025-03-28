@@ -52,12 +52,12 @@ TagManager:
   - name: Collision
     uniqueID: 2713803301
     locked: 0
+  - name: Decoration
+    uniqueID: 2778019141
+    locked: 0
   - name: Game Objects
     uniqueID: 1360409531
     locked: 0
   - name: Walk Behind
     uniqueID: 4122684847
-    locked: 0
-  - name: Decoration
-    uniqueID: 2778019141
     locked: 0

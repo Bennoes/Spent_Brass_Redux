@@ -1,12 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerMovement : MonoBehaviour
 {
     public Camera cam;
     Vector2 playerToMouse, mousePointer;
     public Animator playerAnimator;
+
+    [SerializeField] private float maxZoomIn;
+    [SerializeField] private float maxZoomOut;
+    [SerializeField] private float defaultZoom;
+    [SerializeField] private float zoomDelta;
+    private float targetZoom;
+
+    private float currentZoom;
+    [SerializeField] private CinemachineVirtualCamera cineCam;
 
 
 
@@ -22,7 +32,8 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        cineCam.m_Lens.OrthographicSize = defaultZoom;
+        targetZoom = defaultZoom;
     }
 
     // Update is called once per frame
@@ -41,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
 
         playerAnimator.SetFloat("Horizontal", playerToMouse.x);
         playerAnimator.SetFloat("Vertical", playerToMouse.y);
+
+        MouseWheelZoom();
     }
 
     void FixedUpdate()
@@ -66,6 +79,29 @@ public class PlayerMovement : MonoBehaviour
 
         //get info from mouse position
         
+    }
+
+    private void MouseWheelZoom()
+    {
+        float currentZoom = cineCam.m_Lens.OrthographicSize;
+
+        if(Input.mouseScrollDelta.y < 0 && currentZoom < maxZoomOut)    //zoom out
+        {
+            targetZoom += zoomDelta;
+        }
+
+        if(Input.mouseScrollDelta.y > 0 && currentZoom > maxZoomIn)    //zoom in
+        {
+            targetZoom -= zoomDelta;
+        }
+
+        if (Mathf.Abs(currentZoom - targetZoom) > 0.01f)
+        {
+            
+             cineCam.m_Lens.OrthographicSize = Mathf.Lerp(currentZoom, targetZoom, 0.02f);
+
+        }
+
     }
 
 

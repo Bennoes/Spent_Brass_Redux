@@ -36,15 +36,15 @@ MonoBehaviour:
   FullAuto: 0
   sequencialReload: 1
   maxAmmo: 5
-  shotsPerPull: 10
+  shotsPerPull: 12
   cycleRate: 0.6
   projectileSpeed: 60
   reloadTime: 0.5
-  damage: 3
-  rangeNominal: 10
+  damage: 100
+  rangeNominal: 30
   rangeFuzz: 2
-  maxSpreadFuzz: 5
-  spreadNominalFuzz: 5
+  maxSpreadFuzz: 15
+  spreadNominalFuzz: 15
   recoilRate: 1
   recoilRecoveryRate: 0
   tracerLength: 1
@@ -85,7 +85,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.4
+      time: 0.5
       value: 1
       inSlope: -Infinity
       outSlope: -Infinity
@@ -117,4 +117,4 @@ MonoBehaviour:
   animationController: {fileID: 9100000, guid: 7066d5037f3e5824e891a5d9d51f812d, type: 2}
   SpentAmmo: {fileID: 1771831615206667709, guid: 695dd22feaade5640a6efe391a2c7cdd, type: 3}
   weaponIcon: {fileID: 21300000, guid: 61ba78c00e417c64b87d975e610f79d8, type: 3}
-  AmmoIcon: {fileID: 21300000, guid: 403e2d3ecc2dbc44095fbc836281f2c5, type: 3}
+  AmmoIcon: {fileID: 1743640444, guid: 1597f3546226cf142bc9ff9ff64c4d6d, type: 3}

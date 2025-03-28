@@ -84,7 +84,7 @@ public class PathFinderController : MonoBehaviour
             //check if current node = target node e.g youve reached your destination
             if(currentNode == endNode)
             {
-                Debug.Log("reached the end node");
+                //Debug.Log("reached the end node");
                 
                 return RetracePath(startNode, endNode);
                 //

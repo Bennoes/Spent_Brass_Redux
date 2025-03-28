@@ -16,6 +16,7 @@ public class WeaponSO : ScriptableObject
     public Vector2[] ejectionPoints;
 
     public WeaponType weaponType;
+    public MagazineType MagazineType;
 
     public bool primaryWeapon = false;
 
@@ -23,6 +24,7 @@ public class WeaponSO : ScriptableObject
     //weapon attributes
     public bool FullAuto = false;
     public bool sequencialReload = false;
+    public bool piercingAmmo = false;   
 
     public int maxAmmo;
 
@@ -66,4 +68,14 @@ public enum WeaponType
     LMG,
     BATTLE_RIFLE,
     DMR
+}
+
+public enum MagazineType
+{
+    SINGLE_STACK,
+    DOUBLE_STACK,
+    TUBE,
+    DRUM,
+    C_MAG,
+    P90
 }

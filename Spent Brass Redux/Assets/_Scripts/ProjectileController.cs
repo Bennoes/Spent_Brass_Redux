@@ -8,6 +8,7 @@ public class ProjectileController : MonoBehaviour
     [HideInInspector] public float projectileMaxDamage;
     [HideInInspector] public float projectileRange;
     [HideInInspector] public Vector2 projectileDirection;
+    [HideInInspector] public bool isPiercing;
 
     [HideInInspector] public WeaponSO weapon;
     public TrailRenderer tracer;
@@ -17,6 +18,7 @@ public class ProjectileController : MonoBehaviour
     private float distanceToHit;
     private Vector2 hitPoint;
     private IHittable hitObject;
+    private GameObject hitGameObject;
 
     [SerializeField] private GameObject hitMarker;
 
@@ -47,7 +49,8 @@ public class ProjectileController : MonoBehaviour
 
         if (hit)
         {
-            transform.position += new Vector3(hitPoint.x,hitPoint.y,0);
+            //transform.position += new Vector3(hitPoint.x,hitPoint.y,0);
+            transform.position = new Vector3(hitPoint.x, hitPoint.y, transform.position.z);
             distanceTravelled += distanceToHit * Time.deltaTime;
             Instantiate(hitMarker, hitPoint, Quaternion.identity);
 
@@ -55,9 +58,15 @@ public class ProjectileController : MonoBehaviour
             //tell the object its been hit
             hitObject.OnHit(hitDamage, hitPoint);
 
-            Debug.Log("damage is " + hitDamage);
+            //Debug.Log("damage is " + hitDamage);
+            
 
-            Destroy(gameObject);
+            if(!isPiercing || hitGameObject.CompareTag("NoPierce"))
+            {
+                Destroy(gameObject);
+
+            }
+            
 
 
         }
@@ -72,11 +81,7 @@ public class ProjectileController : MonoBehaviour
             }
         }
 
-        
-        
-        
-
-        
+     
         
     }
 
@@ -96,7 +101,7 @@ public class ProjectileController : MonoBehaviour
             Debug.Log("hit " +  hit.collider.gameObject.name);
             distanceToHit = hit.distance;
             hitPoint = hit.point;
-
+            hitGameObject = hit.collider.gameObject;
             hitObject = hit.collider.gameObject.GetComponent<IHittable>();
 
             

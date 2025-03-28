@@ -39,7 +39,7 @@ MonoBehaviour:
   shotsPerPull: 1
   cycleRate: 0.2
   projectileSpeed: 70
-  reloadTime: 1.5
+  reloadTime: 0.5
   damage: 10
   rangeNominal: 15
   rangeFuzz: 1

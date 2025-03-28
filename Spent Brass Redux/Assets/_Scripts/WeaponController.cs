@@ -21,6 +21,7 @@ public class WeaponController : MonoBehaviour
     public GameObject actualShootPoint;
     public GameObject ejectionPoint;
     public GameObject spentAmmo;
+    public GameObject gunPiv;
     
 
 
@@ -69,7 +70,7 @@ public class WeaponController : MonoBehaviour
         
         weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
         SetUpMag?.Invoke();
-
+        SetWeaponPivot();
     }
 
     void Update()
@@ -188,8 +189,10 @@ public class WeaponController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("reload cancelled");
-            isReloading = false;
+            
             reloadTimer = 0;
+            cycleTimer =  weaponInventory[0].WeaponData.reloadTime;
+            isReloading = false;
             return;
         }
 
@@ -353,6 +356,7 @@ public class WeaponController : MonoBehaviour
 
             clonedController.projectileDirection = rotationZ * playerToMouse;
             clonedController.projectileMaxSpeed = weaponInventory[0].WeaponData.projectileSpeed;
+            clonedController.isPiercing = weaponInventory[0].WeaponData.piercingAmmo;
             //need to add fuzz to range
             float rangeFuzz = UnityEngine.Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
             clonedController.projectileRange = weaponInventory[0].WeaponData.rangeNominal + rangeFuzz;
@@ -382,11 +386,11 @@ public class WeaponController : MonoBehaviour
         WeaponSO weaponData = currentWeapon.WeaponData;
 
         // Check ammo availability
-        if (weaponState.currentAmmoCount < 1)
+        if (weaponState.currentAmmoCount < 1 && weaponData.sequencialReload)
         {
-            Debug.Log("Out of ammo!");
+            //Debug.Log("Out of ammo!");
 
-            if(!isReloading)
+            if (!isReloading)
             {
                 isReloading = true;
                 reloadTimer = weaponInventory[0].WeaponData.reloadTime;
@@ -403,7 +407,7 @@ public class WeaponController : MonoBehaviour
             return;
         }
 
-        
+        if (isReloading) return;
         // Fire based on weapon type
         ProjectileCreation();
 
@@ -412,6 +416,20 @@ public class WeaponController : MonoBehaviour
         weaponState.currentAmmoCount--; // Decrement ammo count
         cycleTimer = weaponData.cycleRate;
         DepleteByOne?.Invoke();
+
+        if (weaponState.currentAmmoCount < 1)
+        {
+            //Debug.Log("Out of ammo!");
+
+            if (!isReloading)
+            {
+                isReloading = true;
+                reloadTimer = weaponInventory[0].WeaponData.reloadTime;
+
+            }
+
+            return;
+        }
 
         // Handle semi-auto trigger reset
         if (!weaponData.FullAuto)
@@ -446,6 +464,7 @@ public class WeaponController : MonoBehaviour
             //swap out the animation contoller 
             weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
             SetUpMag?.Invoke();
+            SetWeaponPivot();
         }
         else
         {
@@ -468,7 +487,7 @@ public class WeaponController : MonoBehaviour
         //and choose closest match
         mousePointer = cam.ScreenToWorldPoint(Input.mousePosition);
 
-        playerToMouse = mousePointer - (Vector2)gameObject.transform.position;
+        playerToMouse = mousePointer - (Vector2)gunPiv.transform.position;
         playerToMouse.Normalize();
 
         if (weaponInventory[0] == null || weaponInventory[0].WeaponData.shootPoints.Length < 8)
@@ -507,6 +526,17 @@ public class WeaponController : MonoBehaviour
             weaponAnimator.SetFloat("Horizontal", gunAnimXandY.x);
             weaponAnimator.SetFloat("Vertical", gunAnimXandY.y);
         }
+
+
+    }
+
+    private void SetWeaponPivot()   
+    {
+        Vector2[] shootPoints = weaponInventory[0].WeaponData.shootPoints;
+        Vector2 pivot = (shootPoints[0] + shootPoints[1] + shootPoints[2] + shootPoints[3] + shootPoints[4]
+                         + shootPoints[5] + shootPoints[6] + shootPoints[7]) / 8;
+
+        gunPiv.transform.localPosition = pivot;
 
 
     }

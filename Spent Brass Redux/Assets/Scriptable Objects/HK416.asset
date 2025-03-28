@@ -35,12 +35,12 @@ MonoBehaviour:
   primaryWeapon: 0
   FullAuto: 1
   sequencialReload: 0
-  maxAmmo: 30
+  maxAmmo: 50
   shotsPerPull: 1
   cycleRate: 0.1
   projectileSpeed: 100
   reloadTime: 2
-  damage: 15
+  damage: 100
   rangeNominal: 15
   rangeFuzz: 3
   maxSpreadFuzz: 5

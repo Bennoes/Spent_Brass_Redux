@@ -2,14 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System;
 
 public class EnemyController : MonoBehaviour,IHittable
 {
-    public float HitPoints { get; set; }
+    public event Action OnDeath;
+    public float CurrentArmour { get; set; }
 
     public float MaxHitPoints;
 
     public float speed = 5;
+    private float fuzzedSpeed;
+    private float speedFuzzTimer;
+    public float speedChangeTime;
+    public float speedRange;
+
+    public float siteRange = 5;
+
+    
+
+
     public GameObject hitText;
 
     public EnemyStates currentState = EnemyStates.Patrol;
@@ -21,11 +33,21 @@ public class EnemyController : MonoBehaviour,IHittable
 
     private List<Vector2> path = new List<Vector2>();
 
+    //look and move direction tracking
+    [SerializeField] GameObject lookDirectionIndicator;
+    [SerializeField] GameObject travelDirectionIndicator;
+
+    private Vector2 lastPosition;
+    private Vector2 currentPosition;
+    private Vector2 travelDirection;
+
+
+
     public void OnHit(float damage, Vector2 textPos)
     {
         Debug.Log("Enemy Hit");
         
-        HitPoints -= damage;
+        CurrentArmour -= damage;
         
 
         Vector2 newTextPos = Utilities.Fuzz(textPos, 0.5f);
@@ -33,47 +55,87 @@ public class EnemyController : MonoBehaviour,IHittable
         GameObject thisHitText = Instantiate(hitText, newTextPos, Quaternion.identity);
         HitTextController thisTextControl = thisHitText.GetComponent<HitTextController>();
         thisTextControl.damage = damage;
-
-        spriteRenderer.color = Color.red;
-
-        Debug.Log("targer pos " + transform.position);
-
-        Debug.Log("player pos " + player.transform.position);
-
-        SpriteRenderer mesh = player.GetComponent<SpriteRenderer>();
-        Vector2 playerFeet = new(player.transform.position.x, player.transform.position.y - mesh.bounds.size.y/2);
-        path = pathFinder.GetPathOfVectors(transform.position, playerFeet);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        HitPoints = MaxHitPoints;
+        CurrentArmour = MaxHitPoints;
         path.Clear();
-
-        
-        
-
-        
+        lastPosition = transform.position;
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (HitPoints <= 0)
+
+        if (CurrentArmour    <= 0)
         {
             Destroy(gameObject);
         }
 
+        currentPosition = transform.position;
+
         EnemyStateMachine();
 
+        lastPosition = transform.position;
 
+        travelDirection = lastPosition - currentPosition;
+        travelDirection = travelDirection.normalized;
+        travelDirectionIndicator.transform.localPosition = travelDirection;
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            
-        }
+        SpeedFuzzer();
     }
+
+
+    private void TempEnemyPatrol()
+    {
+        List<AtlusNode> patrolList = new List<AtlusNode>();
+        
+        AtlusNode currentNode = pathFinder.atlasController.GetNodeAtPoint(this.transform.position);
+
+        float currentX = currentNode.arrayCoordinates.x;
+        float currentY = currentNode.arrayCoordinates.y;
+
+        int arrayXmax = pathFinder.atlasController.gameAtlus.GetLength(0);
+        int arrayYmax = pathFinder.atlasController.gameAtlus.GetLength(1);
+
+        
+        for (int x = (int)currentX - (int)siteRange; x < currentX + siteRange; x++)
+        {
+            for (int y = (int)currentY - (int)siteRange; y < currentY + siteRange; y++)
+            {
+                //Debug.Log(x + " and " + y);
+                if (x < 0 || y < 0) continue;
+
+                if(x >= arrayXmax || y >= arrayYmax) continue;
+
+                if (pathFinder.atlasController.gameAtlus[x,y] == null) continue;
+
+                if (pathFinder.atlasController.gameAtlus[x,y].permanentInaccessable) continue;
+
+                //Debug.Log("node added");
+                patrolList.Add(pathFinder.atlasController.gameAtlus[x,y]);
+            }
+        }
+
+
+        int randomNodeNumber = UnityEngine.Random.Range(0, patrolList.Count);
+        //Debug.Log("length of array " + patrolList.Count);
+        //Debug.Log("random number: " + randomNodeNumber );
+        AtlusNode targetNode = patrolList[randomNodeNumber];
+
+         
+
+        path = pathFinder.GetPathOfVectors(this.transform.position,targetNode.worldCoordintates);
+
+        
+
+
+    }
+
+
 
     public void EnemyStateMachine()
     {
@@ -107,7 +169,7 @@ public class EnemyController : MonoBehaviour,IHittable
         {
             //get path from pathfinder
             //Debug.Log("path complete");
-            
+            TempEnemyPatrol();
         }
         else
         {
@@ -126,10 +188,25 @@ public class EnemyController : MonoBehaviour,IHittable
             else
             {
                 //Debug.Log("moving toward " + nextDestination.x + "," + nextDestination.y);
-                transform.position = Vector2.MoveTowards(transform.position, nextDestination, speed * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, nextDestination, fuzzedSpeed * Time.deltaTime);
 
             }
            
+        }
+    }
+
+
+
+    private void SpeedFuzzer()
+    {
+        if (speedFuzzTimer <= 0)
+        {
+            fuzzedSpeed = Utilities.Fuzz(speed, speedRange);
+            speedFuzzTimer = speedChangeTime;
+        }
+        else
+        {
+            speedFuzzTimer -= Time.deltaTime;
         }
     }
 }

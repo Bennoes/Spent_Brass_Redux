@@ -30,8 +30,8 @@ public class AtlasController : MonoBehaviour
 
         PopulateGameAtlus();
 
-        Debug.Log("atlus size " + gameAtlus.Length);
-        Debug.Log("array dims " + gameAtlus.GetLength(0) + "," + gameAtlus.GetLength(1));
+        //Debug.Log("atlus size " + gameAtlus.Length);
+        //Debug.Log("array dims " + gameAtlus.GetLength(0) + "," + gameAtlus.GetLength(1));
 
         SetUpNeighbours();
 
@@ -60,7 +60,7 @@ public class AtlasController : MonoBehaviour
                 tilemaps.Add(tempTileMap);
 
                 tempTileMap.CompressBounds();
-                Debug.Log("addded " +  tempTileMap.name + " to list");
+                //Debug.Log("addded " +  tempTileMap.name + " to list");
 
                 
             }
@@ -103,11 +103,17 @@ public class AtlasController : MonoBehaviour
 
         foreach (Tilemap tilemap in tilemaps)
         {
+            //Debug.Log(tilemap.name);
+            if((Vector2Int)tilemap.size == Vector2Int.zero)
+            {
+                //Debug.Log("tile map is empty");
+                continue;
+            }
             checkVector.x = Mathf.Min(checkVector.x,tilemap.origin.x);
             checkVector.y = Mathf.Min(checkVector.y,tilemap.origin.y); 
         }
 
-        Debug.Log("Lowest vector " + checkVector);
+        //Debug.Log("Lowest vector " + checkVector);
 
         originAdjustment = checkVector;
     }
@@ -257,7 +263,11 @@ public class AtlasController : MonoBehaviour
         arrayPoint.x = point.x - originAdjustment.x;
         arrayPoint.y = point.y - originAdjustment.y;
 
+        //Debug.Log("array point " + arrayPoint);
+        //Debug.Log("adjustment value " +  originAdjustment);
+
         Vector2Int arrayPointInt = new((int)arrayPoint.x,(int)arrayPoint.y);
+        
 
         AtlusNode node = gameAtlus[arrayPointInt.x, arrayPointInt.y];
 
