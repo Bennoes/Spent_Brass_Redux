@@ -20,6 +20,7 @@ MonoBehaviour:
   baseSpeed: 2
   speedModifier: 1
   siteRange: 8
+  opacityMultiplier: 1
   aggressionModifier: 0
   confidenceModifier: 0
   animationControl: {fileID: 0}

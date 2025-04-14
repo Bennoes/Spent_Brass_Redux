@@ -32,9 +32,11 @@ MonoBehaviour:
   - {x: -0.45, y: -0.25}
   - {x: -0.25, y: 0.4}
   weaponType: 2
+  magazineType: 2
   primaryWeapon: 0
   FullAuto: 0
   sequencialReload: 1
+  piercingAmmo: 0
   maxAmmo: 5
   shotsPerPull: 12
   cycleRate: 0.6

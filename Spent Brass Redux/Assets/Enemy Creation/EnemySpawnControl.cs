@@ -26,11 +26,12 @@ public class EnemySpawnControl : MonoBehaviour
     [SerializeField] private int spawnLevel;
     [SerializeField] private AnimationCurve spawnCurve;
 
-
+    
 
     // Start is called before the first frame update
     void Start()
     {
+
         
 
         if(enemyPartLibrary == null)
@@ -151,12 +152,15 @@ public class EnemySpawnControl : MonoBehaviour
 
         ApplyAnimations(thisEnemyControl);
 
+        //at the momnent only giving rookie arms...
         CreateEnemyArms(EnemyLevel.ROOKIE, thisEnemy);
         
         //thesevalues will be set by parts. hard coded for now
         thisEnemyControl.pathFinder = pathFinder;
         thisEnemyControl.siteRange = 5;
         //thisEnemyControl.speed = 3;
+
+        
         return thisEnemyControl;
 
     }
@@ -230,7 +234,7 @@ public class EnemySpawnControl : MonoBehaviour
 
         EnemyPartControl armsControl = allArms.FirstOrDefault();
 
-        Debug.Log("arms name " + armsControl.gameObject.name);
+        //Debug.Log("arms name " + armsControl.gameObject.name);
         //get type and level
         //pick a random from the remaining list
 
@@ -246,7 +250,7 @@ public class EnemySpawnControl : MonoBehaviour
 
         if(enemyWeaponControl.animator != null)
         {
-            Debug.Log("weaponb anim is not null");
+            //Debug.Log("weaponb anim is not null");
             enemyWeaponControl.animator.runtimeAnimatorController = enemyWeaponControl.enemyWeapon.animationController;
         }
         else

@@ -13,6 +13,7 @@ public class WeaponController : MonoBehaviour
     public static event Action DepleteByOne;
     public static event Action ReloadMag;
     public static event Action ReloadOneRound;
+    public static event Action OnInitialSetUp;
 
 
 
@@ -44,8 +45,6 @@ public class WeaponController : MonoBehaviour
     [HideInInspector] public bool isReloading;
     private float reloadTimer;
     
-
-
     public LayerMask weaponLayer;
     private GameObject clickedObject;
     private bool triggerPull;
@@ -71,6 +70,8 @@ public class WeaponController : MonoBehaviour
         weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
         SetUpMag?.Invoke();
         SetWeaponPivot();
+
+        OnInitialSetUp?.Invoke();
     }
 
     void Update()
@@ -180,7 +181,7 @@ public class WeaponController : MonoBehaviour
     {
         if(state.currentAmmoCount == data.maxAmmo)
         {
-            Debug.Log("fully reloaded");
+            //Debug.Log("fully reloaded");
             isReloading = false;
             reloadTimer = 0;
             return;
@@ -188,7 +189,7 @@ public class WeaponController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("reload cancelled");
+            //Debug.Log("reload cancelled");
             
             reloadTimer = 0;
             cycleTimer =  weaponInventory[0].WeaponData.reloadTime;
@@ -198,7 +199,7 @@ public class WeaponController : MonoBehaviour
 
         if (reloadTimer <= 0)
         {
-            Debug.Log("one round added");
+            //Debug.Log("one round added");
             state.currentAmmoCount ++;
             state.reloadsRemaining--;
             reloadTimer = data.reloadTime;
@@ -253,11 +254,20 @@ public class WeaponController : MonoBehaviour
 
         if (weaponPickUp != null)
         {
-            Debug.Log("pick up that GUN");
+            //Debug.Log("pick up that GUN");
             
              bool pickUpSuccess = CheckInventoryForEmpty(weaponPickUp);
 
-            if (!pickUpSuccess) DiscardAndEquip(weaponPickUp); //run the discard weapon logic
+            if (!pickUpSuccess)
+            {
+                DiscardAndEquip(weaponPickUp);
+            }
+            else
+            {
+                //if there is a space in the inventory "checkInventory" will assign it. We now need to swap to it
+                //might be better assigning it here rather than in the checkInvemtory method
+                WeaponSwap();
+            }
 
         }
         else
@@ -274,10 +284,11 @@ public class WeaponController : MonoBehaviour
         {
             //Debug.Log("for loop is running");
             if(weaponInventory[i] == null)
-            {
-                Debug.Log("empty weapon slot at: " + i);
-                Debug.Log("so adding " + pickedWeapon.WeaponData.name);
+            {               
                 weaponInventory[i] = pickedWeapon;
+
+
+
                 Destroy(clickedObject);
                 return true;               
             }           
@@ -289,26 +300,32 @@ public class WeaponController : MonoBehaviour
     {
         //make sure not to discard main weapon
         //need to search for the secondary with for loop
-        Debug.Log("is this firing");
+
         for (int i = 0; i < weaponInventory.Count; i++)
         {
             if (!weaponInventory[i].WeaponData.primaryWeapon)
             {
-                Debug.Log("if statement i " + i);
-               Debug.Log ("this weapon is not primary. Bin it " + weaponInventory[i].WeaponData.name);
 
-               GameObject tempDropHolder = Instantiate(DropHolder,transform.position,Quaternion.identity);
-               PickUpControl tempPickUpControl = tempDropHolder.GetComponent<PickUpControl>();
-               tempPickUpControl.heldWeapon = weaponInventory[i];
+                GameObject tempDropHolder = Instantiate(DropHolder, transform.position, Quaternion.identity);
+                PickUpControl tempPickUpControl = tempDropHolder.GetComponent<PickUpControl>();
+                tempPickUpControl.heldWeapon = weaponInventory[i];
 
                 weaponInventory[i] = pickedWeapon;
 
-                
                 Destroy(clickedObject);
             }
         }
-        WeaponSwap();
 
+        if (weaponInventory[0].WeaponData.primaryWeapon)
+        {
+            WeaponSwap();
+        }
+        else
+        {
+            weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
+        }
+      
+               
     }
 
     private WeaponManager CheckForPickUpAndReturn()
@@ -455,11 +472,17 @@ public class WeaponController : MonoBehaviour
         OnWeaponUpdate?.Invoke();
     }
 
+    private void WeaponReplace()
+    {
+
+    }
+
     private void WeaponSwap()
     {
-        if (weaponInventory[0] != null && weaponInventory[1] != null)
+
+        if (weaponInventory[0] != null && weaponInventory[1] != null) //carrying two weapons
         {
-            Debug.Log("weapon swapped");
+            //Debug.Log("weapon swapped");
             (weaponInventory[0], weaponInventory[1]) = (weaponInventory[1], weaponInventory[0]);
             //swap out the animation contoller 
             weaponAnimator.runtimeAnimatorController = weaponInventory[0].WeaponData.animationController;
@@ -468,7 +491,7 @@ public class WeaponController : MonoBehaviour
         }
         else
         {
-            Debug.Log("No weapon to swap to");
+            //Debug.Log("No weapon to swap to");
         }
         OnWeaponUpdate?.Invoke();
     }

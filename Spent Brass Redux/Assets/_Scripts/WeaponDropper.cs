@@ -27,7 +27,7 @@ public class WeaponDropper : MonoBehaviour
 
     private void SpawnPickup()
     {
-        Debug.Log("spawning weapon pick up");
+        //Debug.Log("spawning weapon pick up");
         GameObject newPickup = Instantiate(pickUp, this.transform.position, Quaternion.identity);
 
         PickUpControl pickUpControl = newPickup.GetComponent<PickUpControl>();

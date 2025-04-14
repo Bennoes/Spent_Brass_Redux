@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 75, y: 75}
+  m_AnchoredPosition: {x: 70, y: 65}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &14984465
@@ -336,6 +336,10 @@ PrefabInstance:
     - target: {fileID: 1575147798360965636, guid: c47faefefa8a27f449d289df49646c09, type: 3}
       propertyPath: m_Name
       value: Weapon Crate (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575147798360965636, guid: c47faefefa8a27f449d289df49646c09, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4452620903813799121, guid: c47faefefa8a27f449d289df49646c09, type: 3}
       propertyPath: maxMags
@@ -548,8 +552,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 75, y: 270}
-  m_SizeDelta: {x: 100, y: 250}
+  m_AnchoredPosition: {x: 70, y: 400}
+  m_SizeDelta: {x: 100, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &327735115
 GameObject:
@@ -7918,11 +7922,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 791f4e5da1e076442a11c63895f509c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squadSizeRange: {x: 3, y: 6}
+  squadSizeRange: {x: 2, y: 3}
   squadPrefab: {fileID: 5506727873537652765, guid: 2bb427bb235a5444597a6bae0b4b9dc1, type: 3}
   enemyBase: {fileID: 3534062504322307238, guid: a351ff95baca1a14daf4d5daea089da6, type: 3}
   pathFinder: {fileID: 1638316817}
   enemyPartLibrary: {fileID: 11400000, guid: 6d8c01ccaa350ce439d386bc6c12f324, type: 2}
+  weaponsLibrary: {fileID: 11400000, guid: fc8914849da0e8e45b311913ae9a4e8a, type: 2}
   spawnLevel: 0
   spawnCurve:
     serializedVersion: 2
@@ -7961,7 +7966,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &590837371
 GameObject:
@@ -10192,9 +10197,9 @@ GameObject:
   - component: {fileID: 1785911534}
   - component: {fileID: 1785911533}
   - component: {fileID: 1785911532}
-  m_Layer: 15
+  m_Layer: 11
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: NoPierce
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12554,12 +12559,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 16
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -13477,6 +13482,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon Crate (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1575147798360965636, guid: c47faefefa8a27f449d289df49646c09, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4452620903813799121, guid: c47faefefa8a27f449d289df49646c09, type: 3}
       propertyPath: maxMags
       value: 5
@@ -13531,6 +13540,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c47faefefa8a27f449d289df49646c09, type: 3}
+--- !u!1001 &853019985088047990
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4156552157615808909, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_Name
+      value: ACProfileRegistry
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_RootOrder
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192848116955627529, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bbb0dbb30ebd6ac428c1895360c667b7, type: 3}
 --- !u!1001 &1792621625230653149
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13599,6 +13665,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon Crate
       objectReference: {fileID: 0}
+    - target: {fileID: 1575147798360965636, guid: c47faefefa8a27f449d289df49646c09, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4452620903813799121, guid: c47faefefa8a27f449d289df49646c09, type: 3}
       propertyPath: maxMags
       value: 5
@@ -13660,6 +13730,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3986551508856084454, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4108761228795419998, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4108761229549026852, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4108761229549026852, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 4108761229549026875, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
       propertyPath: cam
       value: 
@@ -13703,6 +13789,14 @@ PrefabInstance:
     - target: {fileID: 4108761229549026877, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
       propertyPath: m_Offset.y
       value: -0.6048272
+      objectReference: {fileID: 0}
+    - target: {fileID: 4108761230102319868, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4108761230774806249, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4108761230774806255, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
       propertyPath: cam

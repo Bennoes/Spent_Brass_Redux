@@ -14,7 +14,9 @@ GameObject:
   - component: {fileID: -5930240952523507826}
   - component: {fileID: -4682607569862496095}
   - component: {fileID: 5505700652717231749}
-  m_Layer: 15
+  - component: {fileID: 4471516965280658659}
+  - component: {fileID: 5990683580099550215}
+  m_Layer: 6
   m_Name: Enemy Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +87,6 @@ MonoBehaviour:
   hitText: {fileID: 786028562326892221, guid: b3e169d6b8a6e5e4bb8259c481c2340a, type: 3}
   enemyType: 0
   enemyRank: 0
-  AggressionConfidenceValue: {x: 0, y: 0}
   enemyHud: {fileID: 3534062505042325615}
   baseAnimationController: {fileID: 9100000, guid: bb65938967b30dd49a1a05f7425f1ba4, type: 2}
   AnimatorOverrideController: {fileID: 22100000, guid: d490469b4cf092d429b093a9bb98bbce, type: 2}
@@ -180,6 +181,35 @@ MonoBehaviour:
   assignedWeapon: {fileID: 0}
   maxMags: 2
   pickUp: {fileID: 5137128161415112513, guid: 337d1585c58a155408a545a6221a52eb, type: 3}
+--- !u!114 &4471516965280658659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3534062504322307238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc3def41550a9ef42be5ebe2b09ac6a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyBaseControl: {fileID: -473961103210377252}
+--- !u!114 &5990683580099550215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3534062504322307238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d87edab8297d5e2468af1b0a0b1258b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyBase: {fileID: -473961103210377252}
+  visionMask:
+    serializedVersion: 2
+    m_Bits: 2560
 --- !u!1 &3534062505008188241
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,7 +220,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3534062505008188240}
   - component: {fileID: 3534062505008188243}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Look Direction
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +306,7 @@ GameObject:
   - component: {fileID: 3534062505042325615}
   - component: {fileID: 3534062505042325612}
   - component: {fileID: 3534062505042325613}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -376,7 +406,7 @@ GameObject:
   - component: {fileID: 3534062505083298245}
   - component: {fileID: 3534062505083298247}
   - component: {fileID: 3534062505083298244}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Enemy Class
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +482,7 @@ GameObject:
   - component: {fileID: 3534062505135421579}
   - component: {fileID: 3534062505135422325}
   - component: {fileID: 3534062505135421578}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Enemy Rank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,7 +558,7 @@ GameObject:
   - component: {fileID: 3534062505283613002}
   - component: {fileID: 3534062505283612980}
   - component: {fileID: 3534062505283612981}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -605,7 +635,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3534062505974465608}
   - component: {fileID: 3534062505974465611}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Travel Direction
   m_TagString: Untagged
   m_Icon: {fileID: 0}

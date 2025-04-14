@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a3008e333df5f4eac5d370099dfa97, type: 3}
   m_Name: Weapon Library
   m_EditorClassIdentifier: 
-  enemyWeapons: []
+  enemyWeapons:
+  - {fileID: 11400000, guid: 9deeb8db5679a5d409722b1bb8131d90, type: 2}
+  - {fileID: 11400000, guid: e5503777e08313d468b88f5e26dfbf8e, type: 2}
+  - {fileID: 11400000, guid: 15cf374a608a7994f8649961114cc823, type: 2}

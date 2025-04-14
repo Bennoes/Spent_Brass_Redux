@@ -16,7 +16,7 @@ public class WeaponSO : ScriptableObject
     public Vector2[] ejectionPoints;
 
     public WeaponType weaponType;
-    public MagazineType MagazineType;
+    public MagazineType magazineType;
 
     public bool primaryWeapon = false;
 

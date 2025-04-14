@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Collectable
   - Obstacle
+  - NoPierce
   layers:
   - Default
   - TransparentFX
@@ -13,12 +14,12 @@ TagManager:
   - 
   - Water
   - UI
+  - Enemies
   - 
   - 
-  - 
-  - 
+  - Player
   - Weapon Drops
-  - 
+  - Walls
   - 
   - 
   - 

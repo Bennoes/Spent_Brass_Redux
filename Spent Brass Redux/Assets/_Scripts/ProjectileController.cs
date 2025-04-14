@@ -25,7 +25,7 @@ public class ProjectileController : MonoBehaviour
     public AnimationCurve ProjectileSpeedDistance;
     public AnimationCurve DamageOverDistance;
 
-    public LayerMask layerMask;
+    //public LayerMask layerMask;
 
 
 
@@ -89,28 +89,27 @@ public class ProjectileController : MonoBehaviour
     {
         float rayLength = currentSpeed * Time.deltaTime;       
 
-        RaycastHit2D hit =  Physics2D.Raycast(transform.position,projectileDirection,rayLength, layerMask);
+        RaycastHit2D hit =  Physics2D.Raycast(transform.position,projectileDirection,rayLength);
 
-        if (hit.collider == null)
+        if (hit.collider == null) return false;
+
+        var hittable = hit.collider.GetComponent<IHittable>();
+
+        if (hittable != null)
         {
-           // Debug.Log("no hits");
-           return false;
-        }
-        else
-        {
-            Debug.Log("hit " +  hit.collider.gameObject.name);
+            //Debug.Log("hit " +  hit.collider.gameObject.name);
             distanceToHit = hit.distance;
             hitPoint = hit.point;
             hitGameObject = hit.collider.gameObject;
             hitObject = hit.collider.gameObject.GetComponent<IHittable>();
 
-            
-
             return true;
         }
-
+        else
+        {
+            return false;
+        }
     }
-
 }
 
 

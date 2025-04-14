@@ -22,8 +22,6 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
     public EnemyType enemyType;
     [HideInInspector] public int enemyRank; 
 
-    public Vector2 AggressionConfidenceValue;
-
     public Canvas enemyHud;
 
 
@@ -45,12 +43,16 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
     private Vector2 nextDestination;
     private List<Vector2> path = new List<Vector2>();
 
-    
+    private ACController ACcontrol;
 
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        ACcontrol = gameObject.GetComponent<ACController>();
+
+
         if(spriteRenderer != null)
         {
             
@@ -125,7 +127,7 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
 
     public void OnHit(float damage, Vector2 textPos)
     {
-        Debug.Log("Enemy Hit");
+        //Debug.Log("Enemy Hit");
 
         CurrentArmour -= damage;
 
@@ -140,6 +142,16 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
         {
             Die();
         }
+
+        //following code runs appropriate response in the AC controller
+        //sends data via Stimulus struct
+        IStimuliResponder responder = gameObject.GetComponent<IStimuliResponder>();
+        Stimulus thisStim = new Stimulus(StimulusType.TookDamage);
+        responder?.ReceiveStimulus(thisStim);
+
+
+
+        
     }
 
     private void Die()

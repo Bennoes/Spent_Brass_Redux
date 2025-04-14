@@ -42,7 +42,7 @@ public class TargetControl : MonoBehaviour, IHittable
     public void OnHit(float damage, Vector2 textPos)
     {
         
-        Debug.Log(gameObject.name + " was hit");
+        //Debug.Log(gameObject.name + " was hit");
         CurrentArmour -= damage;
         //Debug.Log($"hit points remaing: {HitPoints}");
 

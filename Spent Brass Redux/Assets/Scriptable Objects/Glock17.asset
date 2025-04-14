@@ -32,15 +32,17 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   weaponType: 0
+  magazineType: 0
   primaryWeapon: 1
   FullAuto: 0
   sequencialReload: 0
+  piercingAmmo: 0
   maxAmmo: 9
   shotsPerPull: 1
   cycleRate: 0.2
   projectileSpeed: 70
   reloadTime: 0.5
-  damage: 10
+  damage: 30
   rangeNominal: 15
   rangeFuzz: 1
   maxSpreadFuzz: 5

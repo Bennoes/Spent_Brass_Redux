@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60dc8dc4365873e418d0a0e291fc84a1, type: 3}
   m_Name: Rookie Grunt Arms
   m_EditorClassIdentifier: 
-  enemyPart: 0
+  enemyPart: 2
   enemyType: 0
   enemyLevel: 0
   baseArmour: 0
@@ -20,6 +20,7 @@ MonoBehaviour:
   baseSpeed: 0
   speedModifier: 0
   siteRange: 0
+  opacityMultiplier: 1
   aggressionModifier: 0
   confidenceModifier: 0
   animationControl: {fileID: 0}
