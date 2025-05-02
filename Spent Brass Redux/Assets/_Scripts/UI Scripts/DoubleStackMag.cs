@@ -85,7 +85,7 @@ public class DoubleStackMag : MagazineBase
         Vector2 newSize = new(magazineWidth, magazineHeight);
 
         float anchorMoveY = (newSize.y - oldSize.y) / 2;
-        Debug.Log(anchorMoveY);
+        //Debug.Log(anchorMoveY);
 
         magRect.anchoredPosition = new(cachedAnchor.x, cachedAnchor.y + anchorMoveY);
 

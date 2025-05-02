@@ -10,6 +10,8 @@ public class ProjectileController : MonoBehaviour
     [HideInInspector] public Vector2 projectileDirection;
     [HideInInspector] public bool isPiercing;
 
+    [HideInInspector] public bool enemyBullet;
+
     [HideInInspector] public WeaponSO weapon;
     public TrailRenderer tracer;
 
@@ -45,6 +47,8 @@ public class ProjectileController : MonoBehaviour
         //Debug.Log("proejectile speed: " + currentSpeed);
         Vector2 currentPos = transform.position;
 
+        //Debug.Log("current speed " + currentSpeed);
+
         bool hit = FireRayOneFrame();
 
         if (hit)
@@ -66,22 +70,21 @@ public class ProjectileController : MonoBehaviour
                 Destroy(gameObject);
 
             }
-            
-
 
         }
         else
         {
             transform.position += (Vector3)projectileDirection * currentSpeed * Time.deltaTime;
             distanceTravelled += currentSpeed * Time.deltaTime;
+             
             if (distanceTravelled >= projectileRange)
             {
+                
                 Instantiate(hitMarker, this.transform.position, Quaternion.identity);
                 Destroy(gameObject);
             }
         }
 
-     
         
     }
 
@@ -92,6 +95,17 @@ public class ProjectileController : MonoBehaviour
         RaycastHit2D hit =  Physics2D.Raycast(transform.position,projectileDirection,rayLength);
 
         if (hit.collider == null) return false;
+
+        if (enemyBullet)
+        {
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemies"))
+            {
+                Debug.Log("miss enemy");
+                return false;
+            }
+
+
+        }
 
         var hittable = hit.collider.GetComponent<IHittable>();
 

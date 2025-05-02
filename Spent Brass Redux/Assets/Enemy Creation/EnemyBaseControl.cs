@@ -13,7 +13,8 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
     public float CurrentArmour { get; set; }
     public float maxArmour;
     public float speed;
-    public float siteRange;
+    public float sightRange;
+    public float fieldOfView = 180;
     public float totalOpacityMultiplier;
     public SpriteRenderer spriteRenderer;
 
@@ -71,15 +72,12 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
     // Update is called once per frame
     void Update()
     {
-        
-
-        
-
-
-        
+   
         currentPosition = transform.position;
 
         //method that moves object 
+        
+        /*
 
         if(path.Count == 0 )
         {
@@ -119,6 +117,7 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
             }
 
         }
+        */
         
         RunAnimations();
 
@@ -145,6 +144,7 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
 
         //following code runs appropriate response in the AC controller
         //sends data via Stimulus struct
+        //needs to be turned in to an extension method to avoid copy and pasting this snippet
         IStimuliResponder responder = gameObject.GetComponent<IStimuliResponder>();
         Stimulus thisStim = new Stimulus(StimulusType.TookDamage);
         responder?.ReceiveStimulus(thisStim);
@@ -178,9 +178,9 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
         int arrayYmax = pathFinder.atlasController.gameAtlus.GetLength(1);
 
 
-        for (int x = (int)currentX - (int)siteRange; x < currentX + siteRange; x++)
+        for (int x = (int)currentX - (int)sightRange; x < currentX + sightRange; x++)
         {
-            for (int y = (int)currentY - (int)siteRange; y < currentY + siteRange; y++)
+            for (int y = (int)currentY - (int)sightRange; y < currentY + sightRange; y++)
             {
                 //Debug.Log(x + " and " + y);
                 if (x < 0 || y < 0) continue;
@@ -220,6 +220,8 @@ public class EnemyBaseControl : MonoBehaviour, IHittable
             //Debug.Log("No run time animation controller set ");
         }
     }
+
+    
 
 
 }

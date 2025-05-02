@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class ACProfileRegistry : MonoBehaviour
 {
-
+    //this holds enemy "personalities" based on type
+    //they are assigned to the enemy on spawn
+    //uses the singleton pattern to make it eaily available
     public static ACProfileRegistry Instance {  get; private set; }
 
     [SerializeField] private List<ACProfile> profileList;

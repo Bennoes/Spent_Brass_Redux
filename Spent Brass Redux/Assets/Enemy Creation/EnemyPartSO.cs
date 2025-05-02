@@ -56,19 +56,22 @@ public enum EnemyParts
     LEGS
 }
 
+
+[System.Flags]
 public enum EnemyType
 {
-    GRUNT,
-    SCOUT,
-    HEAVY,
-    SHOCK
+    GRUNT = 1 << 0,
+    SCOUT = 1 << 1,
+    HEAVY = 1 << 2,
+    SHOCK = 1 << 3
 }
 
+[System.Flags]
 public enum EnemyLevel
 {
-    ROOKIE,
-    VETERAN,
-    ELITE
+    ROOKIE = 1 << 0,
+    VETERAN = 1 << 1,
+    ELITE = 1 << 2
 }
 
 public enum Directions

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5505700652717231749}
   - component: {fileID: 4471516965280658659}
   - component: {fileID: 5990683580099550215}
+  - component: {fileID: 5606069388182490384}
   m_Layer: 6
   m_Name: Enemy Base
   m_TagString: Untagged
@@ -194,6 +195,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyBaseControl: {fileID: -473961103210377252}
+  enemySensor: {fileID: 5990683580099550215}
+  profile: {fileID: 0}
 --- !u!114 &5990683580099550215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +213,23 @@ MonoBehaviour:
   visionMask:
     serializedVersion: 2
     m_Bits: 2560
+--- !u!114 &5606069388182490384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3534062504322307238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734c09e0a21036449bd52d4b3225311f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ACController: {fileID: 4471516965280658659}
+  enemyBaseControl: {fileID: -473961103210377252}
+  tacticsLibrary: {fileID: 0}
+  pathFinder: {fileID: 0}
+  keyList: {fileID: 11400000, guid: 1ff1dcdc41deaec4ba471b65da33ba06, type: 2}
 --- !u!1 &3534062505008188241
 GameObject:
   m_ObjectHideFlags: 0

@@ -57,7 +57,16 @@ public class WeaponController : MonoBehaviour
 
     public RuntimeAnimatorController weaponAnimationController;
     public Animator weaponAnimator;
-    
+
+
+    WeaponUtils weaponUtils;
+
+
+    private void Awake()
+    {
+        weaponUtils = new WeaponUtils();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -353,14 +362,16 @@ public class WeaponController : MonoBehaviour
     private void ProjectileCreation()
     {
 
-        for (int i = 0; i < weaponInventory[0].WeaponData.shotsPerPull; i++)
+        WeaponSO weaponData = weaponInventory[0].WeaponData;
+
+        for (int i = 0; i < weaponData.shotsPerPull; i++)
         {
 
             GameObject clonedProjectile = Instantiate(projectile, actualShootPoint.transform.position, Quaternion.identity);
             ProjectileController clonedController = clonedProjectile.GetComponent<ProjectileController>();
 
             //pass relevant attributes to the newly spawned projectile - more might be added here
-            WeaponSO weaponData = weaponInventory[0].WeaponData;
+            
             clonedController.weapon = weaponData;
 
             currentSpreadFuzz = Mathf.Lerp(weaponData.spreadNominalFuzz, weaponData.maxSpreadFuzz, recoilTimer * weaponData.recoilRate);
@@ -372,13 +383,13 @@ public class WeaponController : MonoBehaviour
 
 
             clonedController.projectileDirection = rotationZ * playerToMouse;
-            clonedController.projectileMaxSpeed = weaponInventory[0].WeaponData.projectileSpeed;
-            clonedController.isPiercing = weaponInventory[0].WeaponData.piercingAmmo;
+            clonedController.projectileMaxSpeed = weaponData.projectileSpeed;
+            clonedController.isPiercing = weaponData.piercingAmmo;
             //need to add fuzz to range
-            float rangeFuzz = UnityEngine.Random.Range(-weaponInventory[0].WeaponData.rangeFuzz, weaponInventory[0].WeaponData.rangeFuzz);
-            clonedController.projectileRange = weaponInventory[0].WeaponData.rangeNominal + rangeFuzz;
-            clonedController.ProjectileSpeedDistance = weaponInventory[0].WeaponData.ProjectileSpeedDistance;
-            clonedController.DamageOverDistance = weaponInventory[0].WeaponData.DamageOverDistance;
+            float rangeFuzz = UnityEngine.Random.Range(-weaponData.rangeFuzz, weaponData.rangeFuzz);
+            clonedController.projectileRange = weaponData.rangeNominal + rangeFuzz;
+            clonedController.ProjectileSpeedDistance = weaponData.ProjectileSpeedDistance;
+            clonedController.DamageOverDistance = weaponData.DamageOverDistance;
 
 
 
@@ -410,7 +421,7 @@ public class WeaponController : MonoBehaviour
             if (!isReloading)
             {
                 isReloading = true;
-                reloadTimer = weaponInventory[0].WeaponData.reloadTime;
+                reloadTimer = weaponData.reloadTime;
 
             }
 
@@ -441,7 +452,7 @@ public class WeaponController : MonoBehaviour
             if (!isReloading)
             {
                 isReloading = true;
-                reloadTimer = weaponInventory[0].WeaponData.reloadTime;
+                reloadTimer = weaponData.reloadTime;
 
             }
 
@@ -472,10 +483,7 @@ public class WeaponController : MonoBehaviour
         OnWeaponUpdate?.Invoke();
     }
 
-    private void WeaponReplace()
-    {
 
-    }
 
     private void WeaponSwap()
     {
@@ -506,6 +514,15 @@ public class WeaponController : MonoBehaviour
 
     private void RotateShootPoints()
     {
+        mousePointer = cam.ScreenToWorldPoint(Input.mousePosition);
+
+        playerToMouse = mousePointer - (Vector2)gunPiv.transform.position;
+        playerToMouse.Normalize();
+
+        weaponUtils.SetShootAndEjectionPoints(weaponInventory[0].WeaponData,playerToMouse, actualShootPoint,ejectionPoint,weaponAnimator);
+
+
+        /*
         //check player to mouse vector against list of shoot points
         //and choose closest match
         mousePointer = cam.ScreenToWorldPoint(Input.mousePosition);
@@ -549,7 +566,7 @@ public class WeaponController : MonoBehaviour
             weaponAnimator.SetFloat("Horizontal", gunAnimXandY.x);
             weaponAnimator.SetFloat("Vertical", gunAnimXandY.y);
         }
-
+        */
 
     }
 

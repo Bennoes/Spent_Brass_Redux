@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,11 +38,61 @@ public class AtlasController : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public AtlusNode GetNodeAtPoint(Vector2 point)
     {
-        
+        Vector2 arrayPoint;
+        arrayPoint.x = point.x - originAdjustment.x;
+        arrayPoint.y = point.y - originAdjustment.y;
+
+        Vector2Int arrayPointInt = new((int)arrayPoint.x, (int)arrayPoint.y);
+
+        AtlusNode node = gameAtlus[arrayPointInt.x, arrayPointInt.y];
+
+        return node;
     }
+
+    //gets a random viable node in range
+    public List<AtlusNode> GetNodesInRange(Vector2 centre, int siteRange, GameObject gameObject)
+    {
+        List<AtlusNode> nodesInRange = new List<AtlusNode>();
+
+        AtlusNode currentNode = GetNodeAtPoint(gameObject.transform.position);
+
+        float currentX = currentNode.arrayCoordinates.x;
+        float currentY = currentNode.arrayCoordinates.y;
+
+        int arrayXmax = gameAtlus.GetLength(0);
+        int arrayYmax = gameAtlus.GetLength(1);
+
+        for (int x = (int)currentX - (int)siteRange; x < currentX + siteRange; x++)
+        {
+            for (int y = (int)currentY - (int)siteRange; y < currentY + siteRange; y++)
+            {
+                //Debug.Log(x + " and " + y);
+                if (x < 0 || y < 0) continue;
+
+                if (x >= arrayXmax || y >= arrayYmax) continue;
+
+                if (gameAtlus[x, y] == null) continue;
+
+                if (gameAtlus[x, y].permanentInaccessable) continue;
+
+                nodesInRange.Add(gameAtlus[x, y]);
+            }
+        }
+
+        return nodesInRange;
+    }
+
+
+    public bool IsInBounds(Vector2Int coords)
+    {
+        int width = gameAtlus.GetLength(0);
+        int height = gameAtlus.GetLength(1);
+
+        return coords.x >= 0 && coords.y >= 0 && coords.x < width && coords.y < height;
+    }
+
 
 
     //need to sort issue with multiple tile maps
@@ -257,21 +308,6 @@ public class AtlasController : MonoBehaviour
 
     //public methods
 
-    public AtlusNode GetNodeAtPoint(Vector2 point)
-    {
-        Vector2 arrayPoint;
-        arrayPoint.x = point.x - originAdjustment.x;
-        arrayPoint.y = point.y - originAdjustment.y;
-
-        //Debug.Log("array point " + arrayPoint);
-        //Debug.Log("adjustment value " +  originAdjustment);
-
-        Vector2Int arrayPointInt = new((int)arrayPoint.x,(int)arrayPoint.y);
-        
-
-        AtlusNode node = gameAtlus[arrayPointInt.x, arrayPointInt.y];
-
-        return node;
-    }
+    
     
 }

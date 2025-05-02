@@ -18,6 +18,8 @@ public class EnemySpawnControl : MonoBehaviour
 
     public GameObject enemyBase;
 
+    public TacticsLibrary tacticsLibrary;
+
 
     public PathFinderController pathFinder;
 
@@ -106,6 +108,11 @@ public class EnemySpawnControl : MonoBehaviour
         //set up enemy base object with its own refs first
 
         EnemyBaseControl thisEnemyControl = SetUpBaseReferences(thisEnemy);
+        //might have to cache this next part
+        TacticsCoordinator tacticsCoordinator = thisEnemy.GetComponent<TacticsCoordinator>();
+
+
+        
 
 
         //choose head, body and legs based on spawn level
@@ -156,11 +163,12 @@ public class EnemySpawnControl : MonoBehaviour
         CreateEnemyArms(EnemyLevel.ROOKIE, thisEnemy);
         
         //thesevalues will be set by parts. hard coded for now
+        //eventually path finder will only be used by the tactics coordinator
         thisEnemyControl.pathFinder = pathFinder;
-        thisEnemyControl.siteRange = 5;
-        //thisEnemyControl.speed = 3;
-
-        
+        tacticsCoordinator.pathFinder = pathFinder;
+        tacticsCoordinator.tacticsLibrary = tacticsLibrary;
+        thisEnemyControl.sightRange = 5;
+     
         return thisEnemyControl;
 
     }
@@ -246,12 +254,12 @@ public class EnemySpawnControl : MonoBehaviour
 
         int randomInt = Random.Range(0, weaponsLibrary.enemyWeapons.Count);
 
-        enemyWeaponControl.enemyWeapon = weaponsLibrary.enemyWeapons[randomInt];
+        enemyWeaponControl.weaponData = weaponsLibrary.enemyWeapons[randomInt];
 
         if(enemyWeaponControl.animator != null)
         {
             //Debug.Log("weaponb anim is not null");
-            enemyWeaponControl.animator.runtimeAnimatorController = enemyWeaponControl.enemyWeapon.animationController;
+            enemyWeaponControl.animator.runtimeAnimatorController = enemyWeaponControl.weaponData.animationController;
         }
         else
         {
@@ -259,7 +267,7 @@ public class EnemySpawnControl : MonoBehaviour
         }
 
         WeaponDropper dropper = enemyBase.GetComponent<WeaponDropper>();
-        dropper.assignedWeapon = enemyWeaponControl.enemyWeapon;
+        dropper.assignedWeapon = enemyWeaponControl.weaponData;
 
 
 

@@ -7925,6 +7925,7 @@ MonoBehaviour:
   squadSizeRange: {x: 2, y: 3}
   squadPrefab: {fileID: 5506727873537652765, guid: 2bb427bb235a5444597a6bae0b4b9dc1, type: 3}
   enemyBase: {fileID: 3534062504322307238, guid: a351ff95baca1a14daf4d5daea089da6, type: 3}
+  tacticsLibrary: {fileID: 1641381892}
   pathFinder: {fileID: 1638316817}
   enemyPartLibrary: {fileID: 11400000, guid: 6d8c01ccaa350ce439d386bc6c12f324, type: 2}
   weaponsLibrary: {fileID: 11400000, guid: fc8914849da0e8e45b311913ae9a4e8a, type: 2}
@@ -10184,6 +10185,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   atlasController: {fileID: 1638316815}
+--- !u!1 &1641381891
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1641381893}
+  - component: {fileID: 1641381892}
+  m_Layer: 0
+  m_Name: TacticLibrary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1641381892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641381891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b52a53fe5cf5b44811f64dd7cfdfb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathfinder: {fileID: 1638316817}
+--- !u!4 &1641381893
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641381891}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.80049133, y: -0.86532307, z: -0.009202534}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 21
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1785911530
 GameObject:
   m_ObjectHideFlags: 0
@@ -13784,11 +13830,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4108761229549026877, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
       propertyPath: m_Size.y
-      value: 0.37219992
+      value: 1.2910165
       objectReference: {fileID: 0}
     - target: {fileID: 4108761229549026877, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
       propertyPath: m_Offset.y
-      value: -0.6048272
+      value: -0.14541894
       objectReference: {fileID: 0}
     - target: {fileID: 4108761230102319868, guid: 4d96110a8b7036e4fa1f356c2483e8fa, type: 3}
       propertyPath: m_Layer
